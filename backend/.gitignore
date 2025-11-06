@@ -1,0 +1,49 @@
+# Bytecode files
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Virtual environment directories
+venv/
+env/
+.venv/
+ENV/
+.ENV/
+
+# Environment variables (including .env files)
+.env
+.env.local
+.env.production
+.env.*.local
+
+# Flask/Django migration folders
+migrations/
+
+# IDE specific files
+.idea/
+.vscode/
+
+# Jupyter Notebook checkpoints
+.ipynb_checkpoints
+
+# Test and coverage directories
+.coverage
+.tox/
+.nox/
+*.coverage
+*.hypothesis/
+
+# Distribution / packaging
+build/
+dist/
+*.egg-info/
+
+# Docker files
+docker-compose.yml
+Dockerfile
+.docker/
+
+# OS-specific files
+.DS_Store
+Thumbs.db

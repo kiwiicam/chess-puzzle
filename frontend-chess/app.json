@@ -1,0 +1,48 @@
+{
+  "expo": {
+    "name": "frontend-chess",
+    "slug": "frontend-chess",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/rust.webp",
+    "scheme": "frontendchess",
+    "userInterfaceStyle": "automatic",
+    "newArchEnabled": true,
+    "ios": {
+      "supportsTablet": true
+    },
+    "android": {
+      "adaptiveIcon": {
+        "backgroundColor": "#E6F4FE",
+        "foregroundImage": "./assets/rust.webp",
+        "backgroundImage": "./assets/rust.webp",
+        "monochromeImage": "./assets/rust.webp"
+      },
+      "edgeToEdgeEnabled": true,
+      "predictiveBackGestureEnabled": false
+    },
+    "web": {
+      "output": "static",
+      "favicon": "./assets/rust.webp"
+    },
+    "plugins": [
+      "expo-router",
+      [
+        "expo-splash-screen",
+        {
+          "image": "./assets/rust.webp",
+          "imageWidth": 200,
+          "resizeMode": "contain",
+          "backgroundColor": "#ffffff",
+          "dark": {
+            "backgroundColor": "#000000"
+          }
+        }
+      ]
+    ],
+    "experiments": {
+      "typedRoutes": true,
+      "reactCompiler": true
+    }
+  }
+}
