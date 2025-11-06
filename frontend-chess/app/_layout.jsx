@@ -20,13 +20,13 @@ export default function TabsLayout() {
         }}
       />
 
-        
+
 
       <Tabs.Screen
         name="Reflex"
 
         options={{
-          
+
           title: "Reflex",
           tabBarIcon: ({ color, size }) => (
             <Ionicons name="flash-outline" size={size} color={color} />
@@ -38,7 +38,7 @@ export default function TabsLayout() {
         name="Puzzles"
 
         options={{
-          
+
           title: "Puzzles",
           tabBarIcon: ({ color, size }) => (
             <Ionicons name="search-outline" size={size} color={color} />
@@ -56,7 +56,7 @@ export default function TabsLayout() {
         }}
       />
 
-         <Tabs.Screen
+      <Tabs.Screen
         name="Settings"
         options={{
           href: null,
@@ -66,12 +66,22 @@ export default function TabsLayout() {
           ),
         }}
       />
+      <Tabs.Screen
+        name="Authentication"
+        options={{
+          href: null,
+          title: "Authentication",
+          tabBarIcon: ({ color, size }) => (
+            <Ionicons name="options" size={size} color={color} />
+          ),
+        }}
+      />
 
-      
+
 
     </Tabs>
 
-   
-    
+
+
   );
 }

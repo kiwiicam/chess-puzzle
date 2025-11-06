@@ -2,21 +2,19 @@ import { Text, View, ImageBackground, StyleSheet, Image, Pressable, ScrollView }
 import { useState, useEffect } from "react";
 import { Ionicons } from "@expo/vector-icons";
 import { useFonts, Barlow_600SemiBold, Barlow_700Bold } from "@expo-google-fonts/barlow";
-
+import { useRouter } from "expo-router";
 //img imports
 import backgroundimage from "../assets/homescreenbg.png"
 import pfp_knight from "../assets/flipped_knight.png"
 import knight from "../assets/knight.png"
 import chessboard from "../assets/chessboard.png"
-import puzzle from "../assets/puzzle.png"
+import puzzle from "../assets/nobg_board.png"
 
 export default function Index() {
-
+  const router = useRouter();
   const [loggedIn, setLoggedIn] = useState(false);
-
-  const [time, setTime] = useState(86400)
-
-  const [topPlayers, setTopPlayers] = useState([])
+  const [time, setTime] = useState(86400);
+  const [topPlayers, setTopPlayers] = useState([]);
 
   const [fontsLoaded] = useFonts({
     Barlow_600SemiBold,
@@ -28,9 +26,9 @@ export default function Index() {
 
     setTopPlayers([
       { username: "kiwicam", elo: 1560, pfp: "https://cdn.pfps.gg/pfps/2301-default-2.png" },
-      { username: "karlos", elo: 1, pfp: "https://cdn.pfps.gg/pfps/2301-default-2.png" },
-      { username: "jez", elo: 0, pfp: "https://cdn.pfps.gg/pfps/2301-default-2.png" },
-    ])
+      { username: "karlos", elo: 1430, pfp: "https://cdn.pfps.gg/pfps/2301-default-2.png" },
+      { username: "jez", elo: 2100, pfp: "https://cdn.pfps.gg/pfps/2301-default-2.png" },
+    ]);
   }, []);
 
   useEffect(() => {
@@ -43,6 +41,8 @@ export default function Index() {
     return () => clearTimeout(timer);
   }, [time]);
 
+  if (!fontsLoaded) return null;
+
   return (
     <ImageBackground
       source={backgroundimage}
@@ -51,19 +51,21 @@ export default function Index() {
     >
       <ScrollView contentContainerStyle={styles.scrollContainer}>
         <View style={styles.defaultView}>
+          {/* HEADER */}
           <View style={styles.header}>
-            <View style={styles.accountStyle}>
+            <Pressable style={styles.accountStyle} onPress={() => router.push("/Authentication")} >
               <View style={styles.knightParent}>
                 <Image source={pfp_knight} style={styles.knight} />
               </View>
               <Text style={styles.accountText}>Sign in</Text>
-            </View>
+            </Pressable>
             <View style={styles.accountStyle}>
               <Ionicons name="notifications-outline" size={35} color={"#435457ff"} />
-              <Ionicons name="settings-outline" size={35} color={"#435457ff"} />
+              <Ionicons name="settings-outline" size={35} color={"#435457ff"} onPress={() => router.push("/Settings")} />
             </View>
           </View>
 
+          {/* MAIN CONTENT */}
           <View style={styles.mainContent}>
             <View style={styles.logoName}>
               <Image source={knight} style={styles.knightImg} />
@@ -81,31 +83,51 @@ export default function Index() {
             </Pressable>
 
             <View style={styles.centerButtons}>
-              <Pressable style={({ pressed }) => [
-                styles.subButtons,
-                pressed && styles.subButtonPressed,
-              ]}
-                onPress={() => console.log("Pressed Move analysis")}>
+              <Pressable
+                style={({ pressed }) => [
+                  styles.subButtons,
+                  pressed && styles.subButtonPressed,
+                ]}
+                onPress={() => console.log("Pressed Move analysis")}
+              >
                 <Ionicons name="extension-puzzle" size={25} color={"#435457ff"} />
                 <Text style={styles.subButtonText}>SANDBOX</Text>
               </Pressable>
-              <Pressable style={({ pressed }) => [
-                styles.subButtons,
-                pressed && styles.subButtonPressed,
-              ]}
-                onPress={() => console.log("Pressed Lessons")}>
+              <Pressable
+                style={({ pressed }) => [
+                  styles.subButtons,
+                  pressed && styles.subButtonPressed,
+                ]}
+                onPress={() => console.log("Pressed Lessons")}
+              >
                 <Ionicons name="book" size={25} color={"#435457ff"} />
                 <Text style={styles.subButtonText}>LESSONS</Text>
               </Pressable>
             </View>
           </View>
+
+          {/* BOTTOM CONTENT */}
           <View style={styles.bottomContent}>
+            {/* TOP PUZZLERS */}
             <View style={styles.topPuzzlers}>
               <View style={styles.topPuzzlersBox}>
                 <Text style={styles.topPuzzlersText}>TOP PUZZLERS</Text>
                 <Image source={chessboard} style={styles.boardImage} />
               </View>
+
               <View style={styles.topPlayerArea}>
+                {/* Map top players here */}
+                {topPlayers.map((player, index) => (
+                  <View key={index} style={styles.topPlayersBox}>
+                    <View style={styles.playerInfo}>
+                      <Image source={{ uri: player.pfp }} style={styles.playerPfp} />
+                      <Text style={styles.playerText}>{player.username}</Text>
+                    </View>
+                    <Text style={styles.playerText}>{player.elo}</Text>
+                  </View>
+                ))}
+
+                {/* View button */}
                 <Pressable style={styles.viewMore}>
                   <Text style={styles.viewMoreText}>View </Text>
                   <Ionicons name="chevron-forward" size={18} color={"#fff"} />
@@ -113,6 +135,7 @@ export default function Index() {
               </View>
             </View>
 
+            {/* DAILY CHALLENGE */}
             <View style={styles.dailyChallenge}>
               <View style={styles.topPuzzlersBox}>
                 <Text style={styles.DailyText}>DAILY CHALLENGE</Text>
@@ -120,25 +143,20 @@ export default function Index() {
               </View>
               <View style={styles.dailyVertical}>
                 <View style={styles.timeBox}>
-                  <Text style={styles.timeText}>{Math.floor(time / 3600)
-                    .toString()
-                    .padStart(2, "0")}
-                    :
-                    {Math.floor((time % 3600) / 60)
-                      .toString()
-                      .padStart(2, "0")}
-                    :
-                    {(time % 60).toString().padStart(2, "0")}</Text>
-                </View>
-                <View style={[styles.viewMore, { width: "auto" }]}>
-                  <Text style={styles.viewMoreText}>Play <Ionicons name="chevron-forward" size={18} color={"#fff"} /></Text>
+                  <Text style={styles.timeText}>
+                    {Math.floor(time / 3600).toString().padStart(2, "0")}:
+                    {Math.floor((time % 3600) / 60).toString().padStart(2, "0")}:
+                    {(time % 60).toString().padStart(2, "0")}
+                  </Text>
+                  <Text style={styles.viewMoreText}>
+                    Play <Ionicons name="chevron-forward" size={18} color={"#fff"} />
+                  </Text>
                 </View>
               </View>
             </View>
 
-            <View style={styles.newsAndUpdates}>
-
-            </View>
+            {/* NEWS AND UPDATES */}
+            <View style={styles.newsAndUpdates}></View>
           </View>
         </View>
       </ScrollView>
@@ -257,26 +275,11 @@ const styles = StyleSheet.create({
   topPuzzlers: {
     padding: 10,
     width: "94%",
-    height: 150,
+    height: 200,
     backgroundColor: "#1e283580",
     borderRadius: 8,
     flexDirection: "row",
     gap: 22
-  },
-  dailyChallenge: {
-    padding: 10,
-    width: "94%",
-    height: 150,
-    backgroundColor: "#1e283580",
-    borderRadius: 8,
-    gap: 40,
-    flexDirection: "row",
-  },
-  newsAndUpdates: {
-    width: "94%",
-    height: 150,
-    backgroundColor: "#1e283580",
-    borderRadius: 8
   },
   topPuzzlersBox: {
     alignItems: "center",
@@ -293,46 +296,78 @@ const styles = StyleSheet.create({
     height: 150,
     resizeMode: "contain"
   },
+  topPlayerArea: {
+    flex: 1,
+    alignItems: "center",
+    justifyContent: "flex-start",
+    paddingTop: 10,
+  },
+  topPlayersBox: {
+    width: 180,
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    marginVertical: 3,
+    paddingBottom: 3
+  },
+  playerInfo: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 8,
+  },
+  playerPfp: {
+    width: 25,
+    height: 25,
+    borderRadius: 50,
+  },
+  playerText: {
+    fontSize: 18,
+    color: "#fff",
+    fontFamily: "Barlow_700Bold"
+  },
   viewMore: {
     flexDirection: "row",
-    width: 170,
-    height: 30,
-    backgroundColor: "#516171ff",
+    width: 180,
+    height: 39,
+    backgroundColor: "#40bab1",
     borderRadius: 8,
     justifyContent: "center",
     alignItems: "center",
     paddingLeft: 15,
     paddingRight: 15,
-    marginBottom: 4,
+    marginTop: 8,
   },
   viewMoreText: {
     color: "#fff",
     fontSize: 18,
     fontFamily: "Barlow_700Bold",
   },
-  topPlayersBox: {
-    width: 170,
-    height: 20,
+  dailyChallenge: {
+    padding: 10,
+    width: "94%",
+    height: 150,
+    backgroundColor: "#1e283580",
+    borderRadius: 8,
+    gap: 40,
     flexDirection: "row",
-    justifyContent: "space-between",
-    paddingRight: 30,
-    paddingLeft: 5,
-    borderBottomWidth: 0.5,
-    borderBottomColor: "#8b8484ff",
-    marginTop: 3,
-    marginBottom: 3
-
   },
-  playerText: {
-    fontSize: 15,
-    color: "#fff",
-    fontFamily: "Barlow_600SemiBold"
-
-  },
-  topPlayerArea: {
-    alignItems: "center",
+  dailyVertical: {
+    height: "100%",
     justifyContent: "center",
-    height: "100%"
+    gap: 20,
+  },
+  timeBox: {
+    width: 100,
+    padding: 10,
+    backgroundColor: "#516171ff",
+    borderRadius: 20,
+    justifyContent: "center",
+    alignItems: "center"
+  },
+  timeText: {
+    fontSize: 22,
+    color: "#fff",
+    fontFamily: "Barlow_600SemiBold",
   },
   dailyBoardImage: {
     width: 130,
@@ -345,25 +380,10 @@ const styles = StyleSheet.create({
     fontSize: 30,
     fontFamily: "Barlow_700Bold",
   },
-  dailyVertical: {
-    height: "100%",
-    justifyContent: "center",
-    gap: 20,
+  newsAndUpdates: {
+    width: "94%",
+    height: 150,
+    backgroundColor: "#1e283580",
+    borderRadius: 8
   },
-  timeBox: {
-    width: 100,
-    padding: 10,
-    height: "auto",
-    backgroundColor: "#516171ff",
-    borderRadius: 20,
-  },
-  timeText: {
-    fontSize: 22,
-    color: "#fff",
-    fontFamily: "Barlow_600SemiBold"
-
-  }
-
-
-
-})
+});
