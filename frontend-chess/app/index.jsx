@@ -8,10 +8,13 @@ import backgroundimage from "../assets/homescreenbg.png"
 import pfp_knight from "../assets/flipped_knight.png"
 import knight from "../assets/knight.png"
 import chessboard from "../assets/chessboard.png"
+import puzzle from "../assets/puzzle.png"
 
 export default function Index() {
 
   const [loggedIn, setLoggedIn] = useState(false);
+
+  const [time, setTime] = useState(86400)
 
   const [topPlayers, setTopPlayers] = useState([])
 
@@ -30,7 +33,15 @@ export default function Index() {
     ])
   }, []);
 
-  if (!fontsLoaded) return null;
+  useEffect(() => {
+    if (time <= 0) return;
+
+    const timer = setTimeout(() => {
+      setTime(prev => prev - 1);
+    }, 1000);
+
+    return () => clearTimeout(timer);
+  }, [time]);
 
   return (
     <ImageBackground
@@ -72,7 +83,7 @@ export default function Index() {
             <View style={styles.centerButtons}>
               <Pressable style={({ pressed }) => [
                 styles.subButtons,
-                pressed && styles.mainButtonPressed,
+                pressed && styles.subButtonPressed,
               ]}
                 onPress={() => console.log("Pressed Move analysis")}>
                 <Ionicons name="extension-puzzle" size={25} color={"#435457ff"} />
@@ -80,7 +91,7 @@ export default function Index() {
               </Pressable>
               <Pressable style={({ pressed }) => [
                 styles.subButtons,
-                pressed && styles.mainButtonPressed,
+                pressed && styles.subButtonPressed,
               ]}
                 onPress={() => console.log("Pressed Lessons")}>
                 <Ionicons name="book" size={25} color={"#435457ff"} />
@@ -96,28 +107,33 @@ export default function Index() {
               </View>
               <View style={styles.topPlayerArea}>
                 <Pressable style={styles.viewMore}>
-                  <Text style={styles.viewMoreText}>View More</Text>
+                  <Text style={styles.viewMoreText}>View </Text>
                   <Ionicons name="chevron-forward" size={18} color={"#fff"} />
                 </Pressable>
-                {topPlayers.map((item, index) => {
-                  return (
-                    <View key={index} style={styles.topPlayersBox}>
-                      <Text style={styles.playerText}>
-                        {item.username}
-                      </Text>
-                      <Text style={styles.playerText}>
-                        Elo:
-                        {" " + item.elo}
-                      </Text>
-                    </View>
-                  );
-
-                })}
               </View>
             </View>
 
             <View style={styles.dailyChallenge}>
-
+              <View style={styles.topPuzzlersBox}>
+                <Text style={styles.DailyText}>DAILY CHALLENGE</Text>
+                <Image source={puzzle} style={styles.dailyBoardImage} />
+              </View>
+              <View style={styles.dailyVertical}>
+                <View style={styles.timeBox}>
+                  <Text style={styles.timeText}>{Math.floor(time / 3600)
+                    .toString()
+                    .padStart(2, "0")}
+                    :
+                    {Math.floor((time % 3600) / 60)
+                      .toString()
+                      .padStart(2, "0")}
+                    :
+                    {(time % 60).toString().padStart(2, "0")}</Text>
+                </View>
+                <View style={[styles.viewMore, { width: "auto" }]}>
+                  <Text style={styles.viewMoreText}>Play <Ionicons name="chevron-forward" size={18} color={"#fff"} /></Text>
+                </View>
+              </View>
             </View>
 
             <View style={styles.newsAndUpdates}>
@@ -224,6 +240,9 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     gap: 8
   },
+  subButtonPressed: {
+    backgroundColor: "#334357ff",
+  },
   subButtonText: {
     color: "#fff",
     fontSize: 18,
@@ -236,7 +255,7 @@ const styles = StyleSheet.create({
     gap: 20,
   },
   topPuzzlers: {
-    padding: 15,
+    padding: 10,
     width: "94%",
     height: 150,
     backgroundColor: "#1e283580",
@@ -245,10 +264,13 @@ const styles = StyleSheet.create({
     gap: 22
   },
   dailyChallenge: {
+    padding: 10,
     width: "94%",
     height: 150,
     backgroundColor: "#1e283580",
-    borderRadius: 8
+    borderRadius: 8,
+    gap: 40,
+    flexDirection: "row",
   },
   newsAndUpdates: {
     width: "94%",
@@ -277,7 +299,7 @@ const styles = StyleSheet.create({
     height: 30,
     backgroundColor: "#516171ff",
     borderRadius: 8,
-    justifyContent: "space-between",
+    justifyContent: "center",
     alignItems: "center",
     paddingLeft: 15,
     paddingRight: 15,
@@ -308,7 +330,38 @@ const styles = StyleSheet.create({
 
   },
   topPlayerArea: {
-    gap: 5,
+    alignItems: "center",
+    justifyContent: "center",
+    height: "100%"
+  },
+  dailyBoardImage: {
+    width: 130,
+    height: 130,
+    resizeMode: "contain",
+  },
+  DailyText: {
+    marginBottom: -10,
+    color: "#fff",
+    fontSize: 30,
+    fontFamily: "Barlow_700Bold",
+  },
+  dailyVertical: {
+    height: "100%",
+    justifyContent: "center",
+    gap: 20,
+  },
+  timeBox: {
+    width: 100,
+    padding: 10,
+    height: "auto",
+    backgroundColor: "#516171ff",
+    borderRadius: 20,
+  },
+  timeText: {
+    fontSize: 22,
+    color: "#fff",
+    fontFamily: "Barlow_600SemiBold"
+
   }
 
 
