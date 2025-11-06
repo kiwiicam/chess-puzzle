@@ -1,11 +1,13 @@
 import { Tabs } from "expo-router";
 import { Ionicons } from "@expo/vector-icons";
 
-export default function RootLayout() {
+export default function TabsLayout() {
   return (
     <Tabs
       screenOptions={{
         headerShown: false,
+        tabBarActiveTintColor: "#4CAF50",
+        tabBarStyle: { backgroundColor: "#121212", borderTopColor: "#333" },
       }}
     >
       <Tabs.Screen
@@ -17,6 +19,7 @@ export default function RootLayout() {
           ),
         }}
       />
+
       <Tabs.Screen
         name="Account"
         options={{
@@ -26,6 +29,18 @@ export default function RootLayout() {
           ),
         }}
       />
+
+      <Tabs.Screen
+  name="BestMove"
+  options={{
+    href: null, 
+    title: "Best Move",
+    tabBarIcon: ({ color, size }) => (
+      <Ionicons name="game-controller" size={size} color={color} />
+    ),
+  }}
+/>
+      
     </Tabs>
   );
 }
