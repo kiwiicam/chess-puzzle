@@ -22,13 +22,13 @@ export default function TabsLayout() {
         }}
       />
 
-        
+
 
       <Tabs.Screen
         name="Reflex"
 
         options={{
-          
+
           title: "Reflex",
           tabBarIcon: ({ color, size }) => (
             <Ionicons name="flash-sharp" size={size} color={color} />
@@ -40,7 +40,7 @@ export default function TabsLayout() {
         name="Puzzles"
 
         options={{
-          
+
           title: "Puzzles",
           tabBarIcon: ({ color, size }) => (
             <FontAwesome name="puzzle-piece" size={size} color={color} />
@@ -68,6 +68,7 @@ export default function TabsLayout() {
         }}
       />
 
+<<<<<<< HEAD
         <Tabs.Screen
         name="Sandbox"
         options={{
@@ -91,6 +92,9 @@ export default function TabsLayout() {
       />
       
          <Tabs.Screen
+=======
+      <Tabs.Screen
+>>>>>>> origin/main
         name="Settings"
         options={{
           href: null,
@@ -100,12 +104,22 @@ export default function TabsLayout() {
           ),
         }}
       />
+      <Tabs.Screen
+        name="Authentication"
+        options={{
+          href: null,
+          title: "Authentication",
+          tabBarIcon: ({ color, size }) => (
+            <Ionicons name="options" size={size} color={color} />
+          ),
+        }}
+      />
 
-      
+
 
     </Tabs>
 
-   
-    
+
+
   );
 }
