@@ -6,6 +6,12 @@ export default function RootLayout() {
     <Tabs
       screenOptions={{
         headerShown: false,
+        tabBarStyle: {
+          backgroundColor: "#222",
+          height: 60,
+          paddingBottom: 0,
+          borderTopWidth: 0
+        }
       }}
     >
       <Tabs.Screen
@@ -13,7 +19,7 @@ export default function RootLayout() {
         options={{
           title: "Home",
           tabBarIcon: ({ color, size }) => (
-            <Ionicons name="home" size={size} color={color} />
+            <Ionicons name="home-sharp" size={size} color={color} />
           ),
         }}
       />

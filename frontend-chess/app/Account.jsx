@@ -1,6 +1,14 @@
 import { Text, View, StyleSheet } from "react-native";
+import { useRouter } from "expo-router";
+import { useState, useEffect } from "react";
+
 
 export default function Account() {
+
+  const router = useRouter();
+
+  const [loggedIn, setLoggedIn] = useState(false);
+
   return (
     <View
       style={[styles.test, {
