@@ -6,12 +6,8 @@ export default function TabsLayout() {
     <Tabs
       screenOptions={{
         headerShown: false,
-        tabBarStyle: {
-          backgroundColor: "#222",
-          height: 60,
-          paddingBottom: 0,
-          borderTopWidth: 0
-        }
+        tabBarActiveTintColor: "#4CAF50",
+        tabBarStyle: { backgroundColor: "#121212", borderTopColor: "#333" },
       }}
     >
       <Tabs.Screen
@@ -19,7 +15,33 @@ export default function TabsLayout() {
         options={{
           title: "Home",
           tabBarIcon: ({ color, size }) => (
-            <Ionicons name="home-sharp" size={size} color={color} />
+            <Ionicons name="home-outline" size={size} color={color} />
+          ),
+        }}
+      />
+
+        
+
+      <Tabs.Screen
+        name="Reflex"
+
+        options={{
+          
+          title: "Reflex",
+          tabBarIcon: ({ color, size }) => (
+            <Ionicons name="flash-outline" size={size} color={color} />
+          ),
+        }}
+      />
+
+      <Tabs.Screen
+        name="Puzzles"
+
+        options={{
+          
+          title: "Puzzles",
+          tabBarIcon: ({ color, size }) => (
+            <Ionicons name="search-outline" size={size} color={color} />
           ),
         }}
       />
@@ -29,22 +51,27 @@ export default function TabsLayout() {
         options={{
           title: "Account",
           tabBarIcon: ({ color, size }) => (
-            <Ionicons name="person" size={size} color={color} />
+            <Ionicons name="person-outline" size={size} color={color} />
           ),
         }}
       />
 
-      <Tabs.Screen
-  name="BestMove"
-  options={{
-    href: null, 
-    title: "Best Move",
-    tabBarIcon: ({ color, size }) => (
-      <Ionicons name="game-controller" size={size} color={color} />
-    ),
-  }}
-/>
+         <Tabs.Screen
+        name="Settings"
+        options={{
+          href: null,
+          title: "Settings",
+          tabBarIcon: ({ color, size }) => (
+            <Ionicons name="options" size={size} color={color} />
+          ),
+        }}
+      />
+
       
+
     </Tabs>
+
+   
+    
   );
 }
