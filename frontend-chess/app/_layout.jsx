@@ -1,5 +1,7 @@
 import { Tabs } from "expo-router";
-import { Ionicons } from "@expo/vector-icons";
+import { Ionicons, MaterialCommunityIcons, SimpleLineIcons, FontAwesome, Entypo } from "@expo/vector-icons";
+
+
 
 export default function TabsLayout() {
   return (
@@ -15,7 +17,7 @@ export default function TabsLayout() {
         options={{
           title: "Home",
           tabBarIcon: ({ color, size }) => (
-            <Ionicons name="home-outline" size={size} color={color} />
+            <MaterialCommunityIcons  name="chess-king" size={size} color={color} />
           ),
         }}
       />
@@ -29,7 +31,7 @@ export default function TabsLayout() {
           
           title: "Reflex",
           tabBarIcon: ({ color, size }) => (
-            <Ionicons name="flash-outline" size={size} color={color} />
+            <Ionicons name="flash-sharp" size={size} color={color} />
           ),
         }}
       />
@@ -41,7 +43,17 @@ export default function TabsLayout() {
           
           title: "Puzzles",
           tabBarIcon: ({ color, size }) => (
-            <Ionicons name="search-outline" size={size} color={color} />
+            <FontAwesome name="puzzle-piece" size={size} color={color} />
+          ),
+        }}
+      />
+
+        <Tabs.Screen
+        name="Judgement"
+        options={{
+          title: "Judgement",
+          tabBarIcon: ({ color, size }) => (
+            <Entypo name="gauge" size={size} color={color} />
           ),
         }}
       />
@@ -51,11 +63,33 @@ export default function TabsLayout() {
         options={{
           title: "Account",
           tabBarIcon: ({ color, size }) => (
-            <Ionicons name="person-outline" size={size} color={color} />
+            <Ionicons name="person-sharp" size={size} color={color} />
           ),
         }}
       />
 
+        <Tabs.Screen
+        name="Sandbox"
+        options={{
+          href: null,
+          title: "Sandbox",
+          tabBarIcon: ({ color, size }) => (
+            <Ionicons name="hammer-outline" size={size} color={color} />
+          ),
+        }}
+      />
+
+      <Tabs.Screen
+        name="SignIn"
+        options={{
+          href: null,
+          title: "Sign In",
+          tabBarIcon: ({ color, size }) => (
+            <Ionicons name="person-outline" size={size} color={color} />
+          ),
+        }}
+      />
+      
          <Tabs.Screen
         name="Settings"
         options={{

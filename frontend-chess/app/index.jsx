@@ -2,7 +2,7 @@ import { Text, View, ImageBackground, StyleSheet, Image, Pressable } from "react
 import { useState, useEffect } from "react";
 import { Ionicons } from "@expo/vector-icons";
 import { useFonts, Barlow_600SemiBold, Barlow_700Bold } from "@expo-google-fonts/barlow";
-
+import { useRouter } from "expo-router";
 
 //img imports
 import backgroundimage from "../assets/homescreenbg.png"
@@ -19,7 +19,7 @@ export default function Index() {
     Barlow_700Bold,
   });
 
-
+  const router = useRouter();
 
   useEffect(() => {
 
@@ -49,7 +49,16 @@ export default function Index() {
           <View style={styles.accountStyle}>
             <Ionicons name="notifications-outline" size={35} color={"#435457ff"} />
 
-            <Ionicons name="settings-outline" size={35} color={"#435457ff"} />
+            {/* 👇 Pressable Settings Icon */}
+            <Pressable onPress={() => router.push("/Settings")}>
+              {({ pressed }) => (
+                <Ionicons
+                  name="cog-outline"
+                  size={35}
+                  color={pressed ? "#5b708aff" : "#435457ff"}
+                />
+              )}
+            </Pressable>
           </View>
         </View>
         <View style={styles.mainContent}>

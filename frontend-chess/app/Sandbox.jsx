@@ -2,13 +2,13 @@ import { Text, View, StyleSheet, Pressable } from "react-native";
 import { useRouter } from "expo-router";
 import { useState } from "react";
 
-export default function Reflex() {
+export default function Sandbox() {
   const router = useRouter();
   const [loggedIn, setLoggedIn] = useState(false);
 
   return (
     <View style={[styles.test, styles.container]}>
-      <Text style={styles.text}>Reflex</Text>
+      <Text style={styles.text}>Sandbox</Text>
 
       <Pressable
         onPress={() => router.push("/")}
