@@ -1,24 +1,25 @@
-import React from "react";
-import { View, Text, StyleSheet, Image, Pressable } from "react-native";
+import React, { useEffect, useState } from "react";
+import { View, StyleSheet, Image, Pressable } from "react-native";
 
-//pieces import
-import P2 from "../assets/ChessPieces/P2.png"; // pawn
-import R2 from "../assets/ChessPieces/R2.png"; // rook
-import N2 from "../assets/ChessPieces/N2.png"; // knight
-import B2 from "../assets/ChessPieces/B2.png"; // bishop
-import Q2 from "../assets/ChessPieces/Q2.png"; // queen
-import K2 from "../assets/ChessPieces/K2.png"; // king
+import P2 from "../assets/ChessPieces/P2.png";
+import R2 from "../assets/ChessPieces/R2.png";
+import N2 from "../assets/ChessPieces/N2.png";
+import B2 from "../assets/ChessPieces/B2.png";
+import Q2 from "../assets/ChessPieces/Q2.png";
+import K2 from "../assets/ChessPieces/K2.png";
 
-// Black pieces
-import p from "../assets/ChessPieces/p.png"; // pawn
-import r from "../assets/ChessPieces/r.png"; // rook
-import n from "../assets/ChessPieces/n.png"; // knight
-import b from "../assets/ChessPieces/b.png"; // bishop
-import q from "../assets/ChessPieces/q.png"; // queen
-import k from "../assets/ChessPieces/k.png"; // king
+import p from "../assets/ChessPieces/p.png";
+import r from "../assets/ChessPieces/r.png";
+import n from "../assets/ChessPieces/n.png";
+import b from "../assets/ChessPieces/b.png";
+import q from "../assets/ChessPieces/q.png";
+import k from "../assets/ChessPieces/k.png";
 
-export default function Board({ FEN }) {
-
+export default function Board({ FEN, chessObj }) {
+  const [legalMoves, setLegalMoves] = useState([]);
+  const [selected, setSelected] = useState("");
+  const [boardFen, setBoardFen] = useState(FEN);
+  const [boardMatrix, setBoardMatrix] = useState([])
   const pieceMap = {
     P: P2,
     R: R2,
@@ -31,24 +32,65 @@ export default function Board({ FEN }) {
     n: n,
     b: b,
     q: q,
-    k: k
+    k: k,
   };
-  const boardSize = Array.from({ length: 8 }, (_, i) => i);
+
   const dots = Array.from({ length: 6 });
 
-  const FenArray = FEN.split("/");
 
-  const boardMatrix = FenArray.map((row) => {
-    const rowArr = [];
-    for (const char of row) {
-      if (!isNaN(char)) {
-        for (let i = 0; i < parseInt(char); i++) rowArr.push("");
-      } else {
-        rowArr.push(char);
+  useEffect(() => {
+    const FenArray = boardFen.split("/");
+    const boardMatrixTemp = FenArray.map((row) => {
+      const rowArr = [];
+      for (const char of row) {
+        if (!isNaN(char)) {
+          for (let i = 0; i < parseInt(char); i++) rowArr.push("");
+        } else {
+          rowArr.push(char);
+        }
       }
+      return rowArr;
+    });
+    setBoardMatrix(boardMatrixTemp)
+
+  }, [boardFen])
+
+
+  const legalMoveDisplay = (column, row) => {
+    const files = "abcdefgh";
+    const ranks = "87654321";
+    const file = files[column];
+    const rank = ranks[row];
+    const moves = chessObj.moves({ square: file + rank, verbose: true });
+    const allMoves = moves.map((m) => m.to);
+    const moveList = [];
+    setSelected(`${column},${row}`);
+    for (const move of allMoves) {
+      const file = move[0];
+      const rank = move.slice(1, 2);
+      const col = file.charCodeAt(0) - "a".charCodeAt(0);
+      const row = 8 - parseInt(rank);
+      moveList.push(`${col},${row}`);
     }
-    return rowArr;
-  });
+    setLegalMoves(moveList);
+  };
+
+  const makeMove = (col, row) => {
+    const files = "abcdefgh";
+    const ranks = "87654321";
+    const file = files[col];
+    const rank = ranks[row];
+
+    const startFile = files[parseInt(selected.split(",")[0])]
+    const startRank = ranks[parseInt(selected.split(",")[1])]
+
+
+    chessObj.move({ from: startFile + startRank, to: file + rank })
+
+    const newFen = chessObj.fen()
+    setBoardFen(newFen.split(" ")[0])
+    setSelected("")
+  }
 
   return (
     <View style={styles.wrapper}>
@@ -77,6 +119,7 @@ export default function Board({ FEN }) {
           <View key={rowIndex} style={styles.row}>
             {rowArr.map((piece, colIndex) => {
               const isDark = (rowIndex + colIndex) % 2 === 1;
+              const isLegal = legalMoves.includes(`${colIndex},${rowIndex}`);
               return (
                 <Pressable
                   key={colIndex}
@@ -84,9 +127,18 @@ export default function Board({ FEN }) {
                     styles.square,
                     isDark ? styles.darkSquare : styles.lightSquare,
                   ]}
-                  onPress={() => console.log("The square that was pressed was ", colIndex + "," + rowIndex, " and it was a " + piece)}
+                  onPress={() => legalMoveDisplay(colIndex, rowIndex)}
                 >
-                  <Image source={pieceMap[piece]} style={{ width: 40, height: 40 }} />
+                  {isLegal && !piece && <Pressable style={styles.legalDot} onPress={() => makeMove(colIndex, rowIndex)} />}
+                  {piece ? (
+                    <>
+                      <Image
+                        source={pieceMap[piece]}
+                        style={{ width: 40, height: 40, zIndex: 2 }}
+                      />
+                      {isLegal && <View style={styles.legalCircle} />}
+                    </>
+                  ) : null}
                 </Pressable>
               );
             })}
@@ -121,11 +173,6 @@ const styles = StyleSheet.create({
   },
   darkSquare: {
     backgroundColor: "#597788",
-  },
-  pieceText: {
-    fontSize: 24,
-    fontWeight: "bold",
-    color: "#222",
   },
   border: {
     position: "absolute",
@@ -179,5 +226,22 @@ const styles = StyleSheet.create({
     height: 6,
     borderRadius: 3,
     backgroundColor: "#8ea0ac",
+  },
+  legalDot: {
+    position: "absolute",
+    width: 14,
+    height: 14,
+    borderRadius: 7,
+    backgroundColor: "rgba(0,0,0,0.4)",
+    zIndex: 1,
+  },
+  legalCircle: {
+    position: "absolute",
+    width: 42,
+    height: 42,
+    borderRadius: 21,
+    borderWidth: 3,
+    borderColor: "rgba(0,0,0,0.5)",
+    zIndex: 1,
   },
 });

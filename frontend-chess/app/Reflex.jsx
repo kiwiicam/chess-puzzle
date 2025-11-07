@@ -1,16 +1,18 @@
 import { View, Text, Button } from "react-native";
 import { router } from "expo-router";
 import Board from "../components/ChessBoard";
+import { Chess } from 'chess.js'
 
 export default function BestMove() {
 
-  const FEN = "r1bqkbnr/pppp1ppp/2n5/4p3/2B1P3/5N2/PPPP1PPP/RNBQK2R w KQkq e6 0 4"
+  const FEN = "r1bqkbnr/ppp2ppp/2n5/3pp3/3PP3/5N2/PPP2PPP/RNBQKB1R w KQkq - 0 4"
 
-  const FENClean = FEN.split(" ")
-
+  const FENClean = FEN.split(" ");
+  const chess = new Chess(FEN)
+  
   return (
     <View style={{ flex: 1, justifyContent: "center", alignItems: "center", backgroundColor: "#121212" }}>
-      <Board FEN={FENClean[0]} />
+      <Board FEN={FENClean[0]} chessObj={chess} />
     </View>
   );
 }
