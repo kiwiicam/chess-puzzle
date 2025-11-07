@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from "react";
-import { View, StyleSheet, Image, Pressable } from "react-native";
+import React, { useEffect, useState, useRef } from "react";
+import { View, StyleSheet, Image, Pressable, Animated } from "react-native";
 
 import P2 from "../assets/ChessPieces/P2.png";
 import R2 from "../assets/ChessPieces/R2.png";
@@ -19,7 +19,12 @@ export default function Board({ FEN, chessObj }) {
   const [legalMoves, setLegalMoves] = useState([]);
   const [selected, setSelected] = useState("");
   const [boardFen, setBoardFen] = useState(FEN);
-  const [boardMatrix, setBoardMatrix] = useState([])
+  const [boardMatrix, setBoardMatrix] = useState([]);
+  const [movingPiece, setMovingPiece] = useState(null); // track moving piece
+
+  const animation = useRef(new Animated.ValueXY({ x: 0, y: 0 })).current;
+  const [animating, setAnimating] = useState(false);
+
   const pieceMap = {
     P: P2,
     R: R2,
@@ -35,8 +40,8 @@ export default function Board({ FEN, chessObj }) {
     k: k,
   };
 
+  const squareSize = 47;
   const dots = Array.from({ length: 6 });
-
 
   useEffect(() => {
     const FenArray = boardFen.split("/");
@@ -51,10 +56,8 @@ export default function Board({ FEN, chessObj }) {
       }
       return rowArr;
     });
-    setBoardMatrix(boardMatrixTemp)
-
-  }, [boardFen])
-
+    setBoardMatrix(boardMatrixTemp);
+  }, [boardFen]);
 
   const legalMoveDisplay = (column, row) => {
     const files = "abcdefgh";
@@ -76,24 +79,46 @@ export default function Board({ FEN, chessObj }) {
   };
 
   const makeMove = (col, row) => {
+    if (animating) return;
+
     const files = "abcdefgh";
     const ranks = "87654321";
     const file = files[col];
     const rank = ranks[row];
 
-    const startFile = files[parseInt(selected.split(",")[0])]
-    const startRank = ranks[parseInt(selected.split(",")[1])]
+    const [startCol, startRow] = selected.split(",").map(Number);
+    const startFile = files[startCol];
+    const startRank = ranks[startRow];
 
+    const movingPieceType = boardMatrix[startRow][startCol];
+    if (!movingPieceType) return;
 
-    chessObj.move({ from: startFile + startRank, to: file + rank })
+    setMovingPiece({ piece: movingPieceType, from: { col: startCol, row: startRow }, to: { col, row } });
+    setAnimating(true);
 
-    const newFen = chessObj.fen()
-    setBoardFen(newFen.split(" ")[0])
-    setSelected("")
-  }
+    // Calculate pixel distances for animation
+    const dx = (col - startCol) * squareSize;
+    const dy = (row - startRow) * squareSize;
+
+    animation.setValue({ x: 0, y: 0 });
+    Animated.timing(animation, {
+      toValue: { x: dx, y: dy },
+      duration: 250,
+      useNativeDriver: true,
+    }).start(() => {
+      chessObj.move({ from: startFile + startRank, to: file + rank });
+      const newFen = chessObj.fen();
+      setBoardFen(newFen.split(" ")[0]);
+      setSelected("");
+      setLegalMoves([]);
+      setAnimating(false);
+      setMovingPiece(null);
+    });
+  };
 
   return (
     <View style={styles.wrapper}>
+      {/* Decorative Borders */}
       <View style={[styles.border, styles.topBorder]}>
         {dots.map((_, i) => (
           <View key={`top-${i}`} style={styles.dot} />
@@ -114,12 +139,19 @@ export default function Board({ FEN, chessObj }) {
           <View key={`right-${i}`} style={styles.dotVertical} />
         ))}
       </View>
+
+      {/* Chess Board */}
       <View style={styles.container}>
         {boardMatrix.map((rowArr, rowIndex) => (
           <View key={rowIndex} style={styles.row}>
             {rowArr.map((piece, colIndex) => {
               const isDark = (rowIndex + colIndex) % 2 === 1;
               const isLegal = legalMoves.includes(`${colIndex},${rowIndex}`);
+              const isMovingPiece =
+                movingPiece &&
+                movingPiece.from.col === colIndex &&
+                movingPiece.from.row === rowIndex;
+
               return (
                 <Pressable
                   key={colIndex}
@@ -127,23 +159,45 @@ export default function Board({ FEN, chessObj }) {
                     styles.square,
                     isDark ? styles.darkSquare : styles.lightSquare,
                   ]}
-                  onPress={() => legalMoveDisplay(colIndex, rowIndex)}
+                  onPress={() =>
+                    isLegal
+                      ? makeMove(colIndex, rowIndex)
+                      : legalMoveDisplay(colIndex, rowIndex)
+                  }
                 >
-                  {isLegal && !piece && <Pressable style={styles.legalDot} onPress={() => makeMove(colIndex, rowIndex)} />}
-                  {piece ? (
-                    <>
-                      <Image
-                        source={pieceMap[piece]}
-                        style={{ width: 40, height: 40, zIndex: 2 }}
-                      />
-                      {isLegal && <View style={styles.legalCircle} />}
-                    </>
-                  ) : null}
+                  {/* Render stationary piece */}
+                  {piece && !isMovingPiece && (
+                    <Image
+                      source={pieceMap[piece]}
+                      style={{ width: 40, height: 40, zIndex: 2 }}
+                    />
+                  )}
+                  {/* Legal move highlights */}
+                  {!piece && isLegal && <View style={styles.legalDot} />}
+                  {piece && isLegal && <View style={styles.legalCircle} />}
                 </Pressable>
               );
             })}
           </View>
         ))}
+
+        {/* Animated moving piece overlay */}
+        {movingPiece && (
+          <Animated.View
+            style={{
+              position: "absolute",
+              left: movingPiece.from.col * squareSize,
+              top: movingPiece.from.row * squareSize,
+              transform: animation.getTranslateTransform(),
+              zIndex: 10,
+            }}
+          >
+            <Image
+              source={pieceMap[movingPiece.piece]}
+              style={{ width: 40, height: 40 }}
+            />
+          </Animated.View>
+        )}
       </View>
     </View>
   );
