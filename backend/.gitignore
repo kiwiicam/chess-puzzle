@@ -4,6 +4,7 @@ __pycache__/
 *.pyo
 *.pyd
 
+stockfish/
 # Virtual environment directories
 venv/
 env/

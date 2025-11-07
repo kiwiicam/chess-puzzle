@@ -61,7 +61,11 @@ export default function Index() {
             </Pressable>
             <View style={styles.accountStyle}>
               <Ionicons name="notifications-outline" size={35} color={"#435457ff"} />
-              <Ionicons name="settings-outline" size={35} color={"#435457ff"} onPress={() => router.push("/Settings")} />
+              <Pressable
+                onPress={() => router.push("/Settings")}
+              >
+                <Ionicons name="settings-outline" size={35} color={"#435457ff"} />
+              </Pressable>
             </View>
           </View>
 
