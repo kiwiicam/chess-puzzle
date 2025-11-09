@@ -1,6 +1,6 @@
 import { View, Text, Button } from "react-native";
 import { router } from "expo-router";
-import Board from "../components/ChessBoard";
+import Chessboard from "../components/ChessBoard";
 import { Chess } from 'chess.js'
 
 export default function BestMove() {
@@ -9,10 +9,10 @@ export default function BestMove() {
 
   const FENClean = FEN.split(" ");
   const chess = new Chess(FEN)
-  
+
   return (
     <View style={{ flex: 1, justifyContent: "center", alignItems: "center", backgroundColor: "#121212" }}>
-      <Board FEN={FENClean[0]} chessObj={chess} />
+      <Chessboard />
     </View>
   );
 }

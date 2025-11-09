@@ -4,7 +4,7 @@
     "slug": "frontend-chess",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/rust.webp",
+    "icon": "./assets/Rust-Logo.png",
     "scheme": "frontendchess",
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
@@ -14,23 +14,24 @@
     "android": {
       "adaptiveIcon": {
         "backgroundColor": "#E6F4FE",
-        "foregroundImage": "./assets/rust.webp",
-        "backgroundImage": "./assets/rust.webp",
-        "monochromeImage": "./assets/rust.webp"
+        "foregroundImage": "./assets/Rust-Logo.png",
+        "backgroundImage": "./assets/Rust-Logo.png",
+        "monochromeImage": "./assets/Rust-Logo.png"
       },
       "edgeToEdgeEnabled": true,
-      "predictiveBackGestureEnabled": false
+      "predictiveBackGestureEnabled": false,
+      "package": "com.anonymous.frontendchess"
     },
     "web": {
       "output": "static",
-      "favicon": "./assets/rust.webp"
+      "favicon": "./assets/Rust-Logo.png"
     },
     "plugins": [
       "expo-router",
       [
         "expo-splash-screen",
         {
-          "image": "./assets/rust.webp",
+          "image": "./assets/Rust-Logo.png",
           "imageWidth": 200,
           "resizeMode": "contain",
           "backgroundColor": "#ffffff",
