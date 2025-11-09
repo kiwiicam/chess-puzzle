@@ -11,6 +11,7 @@ env/
 ENV/
 .ENV/
 
+node_modules/
 # Environment variables (including .env files)
 .env
 .env.local

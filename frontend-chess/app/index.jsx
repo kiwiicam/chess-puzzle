@@ -3,11 +3,7 @@ import { useState, useEffect } from "react";
 import { Ionicons } from "@expo/vector-icons";
 import { useFonts, Barlow_600SemiBold, Barlow_700Bold } from "@expo-google-fonts/barlow";
 import { useRouter } from "expo-router";
-<<<<<<< HEAD
 
-=======
->>>>>>> origin/main
-//img imports
 import backgroundimage from "../assets/homescreenbg.png"
 import pfp_knight from "../assets/flipped_knight.png"
 import knight from "../assets/knight.png"
@@ -25,11 +21,6 @@ export default function Index() {
     Barlow_700Bold,
   });
 
-<<<<<<< HEAD
-  const router = useRouter();
-
-=======
->>>>>>> origin/main
   useEffect(() => {
     setLoggedIn(false);
 
@@ -74,18 +65,6 @@ export default function Index() {
             </View>
           </View>
 
-<<<<<<< HEAD
-            {/* 👇 Pressable Settings Icon */}
-            <Pressable onPress={() => router.push("/Settings")}>
-              {({ pressed }) => (
-                <Ionicons
-                  name="cog-outline"
-                  size={35}
-                  color={pressed ? "#5b708aff" : "#435457ff"}
-                />
-              )}
-            </Pressable>
-=======
           {/* MAIN CONTENT */}
           <View style={styles.mainContent}>
             <View style={styles.logoName}>
@@ -178,7 +157,6 @@ export default function Index() {
 
             {/* NEWS AND UPDATES */}
             <View style={styles.newsAndUpdates}></View>
->>>>>>> origin/main
           </View>
         </View>
       </ScrollView>

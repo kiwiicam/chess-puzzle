@@ -68,7 +68,6 @@ export default function TabsLayout() {
         }}
       />
 
-<<<<<<< HEAD
         <Tabs.Screen
         name="Sandbox"
         options={{
@@ -79,22 +78,8 @@ export default function TabsLayout() {
           ),
         }}
       />
-
-      <Tabs.Screen
-        name="SignIn"
-        options={{
-          href: null,
-          title: "Sign In",
-          tabBarIcon: ({ color, size }) => (
-            <Ionicons name="person-outline" size={size} color={color} />
-          ),
-        }}
-      />
       
-         <Tabs.Screen
-=======
       <Tabs.Screen
->>>>>>> origin/main
         name="Settings"
         options={{
           href: null,
