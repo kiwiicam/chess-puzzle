@@ -1,49 +1,21 @@
 import { useState } from "react";
-import { View, Text, TextInput, Pressable, StyleSheet, ImageBackground, Image, Alert } from "react-native";
+import { View, Text, TextInput, Pressable, StyleSheet, ImageBackground, Image } from "react-native";
+import { router } from "expo-router";
 import backgroundimage from "../../assets/homescreenbg.png";
 import knight from "../../assets/knight.png";
 
-export default function SignUp({ setSignUpPage, onSuccess }) {
-  const [username, setUsername] = useState("");
+export default function Login({ setSignUpPage, onSuccess }) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
-  // ⚠️ Replace with your computer’s local IP if testing on a physical phone
-  const API_URL = "http://127.0.0.1:8000/signup";
-
-  const handleSignUp = async () => {
-  if (!username || !email || !password) {
-    Alert.alert("Missing fields", "Please fill in all fields.");
-    return;
-  }
-
-  try {
-    const response = await fetch("http://127.0.0.1:8000/signup", {
-      method: "POST", // 🔥 this is crucial
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        username,
-        email,
-        password,
-      }),
-    });
-
-    const data = await response.json();
-    console.log("Response:", data);
-
-    if (response.ok) {
-      Alert.alert("Success", "Account created successfully!");
-      onSuccess(true);
+  const handleLogin = () => {
+    if (email && password) {
+      onSuccess(true); // return success
+      router.push("/(tabs)"); // navigate into your app
     } else {
-      Alert.alert("Error", data.detail || "Sign up failed");
+      alert("Please enter email and password");
     }
-  } catch (error) {
-    console.error("Signup error:", error);
-    Alert.alert("Network Error", "Could not connect to the server.");
-  }
-};
+  };
 
   return (
     <ImageBackground source={backgroundimage} style={styles.bgimage} resizeMode="cover">
@@ -54,23 +26,14 @@ export default function SignUp({ setSignUpPage, onSuccess }) {
           <Text style={styles.logoTitle}>UNLIMITED CHESS</Text>
         </View>
 
-        {/* Card */}
+        {/* Login card */}
         <View style={styles.card}>
-          <Text style={styles.createTitle}>CREATE YOUR ACCOUNT</Text>
+          <Text style={styles.title}>LOG IN TO YOUR ACCOUNT</Text>
 
-          <TextInput
-            style={styles.input}
-            placeholder="USERNAME"
-            placeholderTextColor="#aaa"
-            value={username}
-            onChangeText={setUsername}
-          />
           <TextInput
             style={styles.input}
             placeholder="EMAIL"
             placeholderTextColor="#aaa"
-            keyboardType="email-address"
-            autoCapitalize="none"
             value={email}
             onChangeText={setEmail}
           />
@@ -83,8 +46,8 @@ export default function SignUp({ setSignUpPage, onSuccess }) {
             onChangeText={setPassword}
           />
 
-          <Pressable style={styles.signupButton} onPress={handleSignUp}>
-            <Text style={styles.signupText}>SIGN UP</Text>
+          <Pressable style={styles.loginButton} onPress={handleLogin}>
+            <Text style={styles.loginText}>LOG IN</Text>
           </Pressable>
 
           <Text style={styles.orText}>OR</Text>
@@ -101,9 +64,9 @@ export default function SignUp({ setSignUpPage, onSuccess }) {
 
         {/* Footer */}
         <Text style={styles.footerText}>
-          Already have an account?{" "}
-          <Text style={styles.loginLink} onPress={() => setSignUpPage(false)}>
-            Log In
+          Don't have an account?{" "}
+          <Text style={styles.signUpLink} onPress={() => setSignUpPage(true)}>
+            Sign Up
           </Text>
         </Text>
       </View>
@@ -153,7 +116,7 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.4,
     shadowRadius: 8,
   },
-  createTitle: {
+  title: {
     color: "#fff",
     fontSize: 18,
     fontWeight: "bold",
@@ -170,7 +133,7 @@ const styles = StyleSheet.create({
     marginVertical: 6,
     fontSize: 15,
   },
-  signupButton: {
+  loginButton: {
     width: "100%",
     backgroundColor: "#40bab1",
     paddingVertical: 12,
@@ -178,7 +141,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     marginTop: 12,
   },
-  signupText: {
+  loginText: {
     color: "#fff",
     fontSize: 16,
     fontWeight: "bold",
@@ -211,7 +174,7 @@ const styles = StyleSheet.create({
     fontSize: 14,
     marginTop: 20,
   },
-  loginLink: {
+  signUpLink: {
     color: "#40bab1",
     fontWeight: "600",
   },

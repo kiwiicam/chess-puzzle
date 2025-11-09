@@ -1,31 +1,14 @@
-<<<<<<< HEAD
-import { View, Text, Button } from "react-native";
-import { router } from "expo-router";
-import Board from "../components/ChessBoard";
-import { Chess } from 'chess.js'
-
-export default function Reflex() {
-
-  const FEN = "r1bqkbnr/ppp2ppp/2n5/3pp3/3PP3/5N2/PPP2PPP/RNBQKB1R w KQkq - 0 4"
-
-  const FENClean = FEN.split(" ");
-  const chess = new Chess(FEN)
-
-  return (
-    <View style={{ flex: 1, justifyContent: "center", alignItems: "center", backgroundColor: "#121212" }}>
-      <Board FEN={FEN}/>
-=======
 import { Text, View, StyleSheet, Pressable } from "react-native";
 import { useRouter } from "expo-router";
 import { useState } from "react";
 
-export default function Reflex() {
+export default function Sandbox() {
   const router = useRouter();
   const [loggedIn, setLoggedIn] = useState(false);
 
   return (
     <View style={[styles.test, styles.container]}>
-      <Text style={styles.text}>Reflex</Text>
+      <Text style={styles.text}>Sandbox</Text>
 
       <Pressable
         onPress={() => router.push("/")}
@@ -36,7 +19,6 @@ export default function Reflex() {
       >
         <Text style={styles.buttonText}>Menu</Text>
       </Pressable>
->>>>>>> basic-app-functions
     </View>
   );
 }
