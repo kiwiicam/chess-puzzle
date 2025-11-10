@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 import { View, Text, Button } from "react-native";
 import { router } from "expo-router";
 import Board from "../components/ChessBoard";
@@ -16,3 +17,30 @@ export default function Reflex() {
     </View>
   );
 }
+
+const styles = StyleSheet.create({
+  test: {
+    backgroundColor: "#111",
+  },
+  container: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  text: {
+    color: "#fff",
+    marginBottom: 20,
+    fontSize: 18,
+  },
+  button: {
+    paddingVertical: 12,
+    paddingHorizontal: 24,
+    borderRadius: 8,
+    alignItems: "center",
+  },
+  buttonText: {
+    color: "white",
+    fontSize: 16,
+    fontWeight: "bold",
+  },
+});

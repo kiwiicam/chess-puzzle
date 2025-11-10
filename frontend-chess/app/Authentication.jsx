@@ -3,7 +3,7 @@ import { router } from "expo-router";
 import { useState } from "react";
 
 import SignUp from "../screens/authscreens/Signup";
-import SignIn from "../screens/authscreens/SignIn";
+import Login from "../screens/authscreens/Login";
 
 export default function Authentication() {
 
@@ -16,5 +16,5 @@ export default function Authentication() {
     }
     
     //renders based on a state that is passed as a prop
-    return signUpPage ? <SignUp setSignUpPage={setSignUpPage} onSuccess={onSuccess} /> : <SignIn setSignUpPage={setSignUpPage} onSuccess={onSuccess} />;
+    return signUpPage ? <SignUp setSignUpPage={setSignUpPage} onSuccess={onSuccess} /> : <Login setSignUpPage={setSignUpPage} onSuccess={onSuccess} />;
 }

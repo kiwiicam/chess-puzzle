@@ -3,7 +3,7 @@ import { useState, useEffect } from "react";
 import { Ionicons } from "@expo/vector-icons";
 import { useFonts, Barlow_600SemiBold, Barlow_700Bold } from "@expo-google-fonts/barlow";
 import { useRouter } from "expo-router";
-//img imports
+
 import backgroundimage from "../assets/homescreenbg.png"
 import pfp_knight from "../assets/flipped_knight.png"
 import knight from "../assets/knight.png"
