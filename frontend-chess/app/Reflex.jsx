@@ -1,46 +1,230 @@
-<<<<<<< HEAD
-import { View, Text, Button } from "react-native";
+import { View, Text, Pressable, ImageBackground, ScrollView, StyleSheet, Image, Dimensions } from "react-native";
 import { router } from "expo-router";
-import Board from "../components/ChessBoard";
-import { Chess } from 'chess.js'
+import { Ionicons } from "@expo/vector-icons";
+import { useFonts, Barlow_600SemiBold, Barlow_700Bold } from "@expo-google-fonts/barlow";
+
+import MovingBoard from "../components/MovingChessBoard"
+
+import backgroundimage from "../assets/homescreenbg.png";
+import pfp_knight from "../assets/flipped_knight.png";
+import knight from "../assets/knight.png";
+
+const { height: SCREEN_HEIGHT } = Dimensions.get("window");
 
 export default function Reflex() {
 
-  const FEN = "r1bqkbnr/ppp2ppp/2n5/3pp3/3PP3/5N2/PPP2PPP/RNBQKB1R w KQkq - 0 4"
+  const [fontsLoaded] = useFonts({
+    Barlow_600SemiBold,
+    Barlow_700Bold,
+  });
 
-  const FENClean = FEN.split(" ");
-  const chess = new Chess(FEN)
+  if (!fontsLoaded) return null;//MUST BE AFTER ANY USE EFFECT
 
   return (
-    <View style={{ flex: 1, justifyContent: "center", alignItems: "center", backgroundColor: "#121212" }}>
-      <Board FEN={FEN} />
-    </View>
+    <ImageBackground
+      source={backgroundimage}
+      style={styles.bgimage}
+      resizeMode="fit"
+    >
+      <ScrollView contentContainerStyle={styles.scrollContainer}>
+        <View style={styles.defaultView}>
+          <View style={styles.header}>
+            <View style={styles.rightGroup}>
+              <Image source={knight} style={styles.knightLeft} />
+            </View>
+
+            <View style={styles.rightGroup}>
+              <Pressable style={styles.accountStyle} onPress={() => router.push("/Authentication")}>
+                <View style={styles.knightParent}>
+                  <Image source={pfp_knight} style={styles.knight} />
+                </View>
+                <Text style={styles.accountText}>Sign in</Text>
+              </Pressable>
+
+              <Ionicons name="notifications-outline" size={35} color={"#435457ff"} />
+              <Pressable onPress={() => router.push("/Settings")}>
+                <Ionicons name="settings-outline" size={35} color={"#435457ff"} />
+              </Pressable>
+            </View>
+          </View>
+          <View style={styles.mainContentReflex}>
+            <Text style={styles.logoFont}>REFLEX</Text>
+            <View style={styles.chessboardContainer}>
+              <MovingBoard />
+            </View>
+            <Pressable style={({ pressed }) => [
+              styles.playReflex,
+              pressed && styles.PlayReflexPressed,
+            ]}>
+              <Text style={styles.playReflexText}>Play Reflex</Text>
+            </Pressable>
+            <View style={styles.infoBox}>
+              <Text style={styles.infoBoxTitle}>Reflex:</Text>
+              <Text style={styles.infoBoxText}>Your Task: Find the most well balanced move (or 2-move sequence) to maintain equality or gain a slight positional advantage. With a 3 minute time per move will your reflexes be enough? </Text>
+            </View>
+          </View>
+          <View style={styles.bottomContent}>
+            <View style={styles.topSection}>
+              <View style={styles.accuracyRating}></View>
+              <View style={styles.reflexStreak}></View>
+            </View>
+            <View style={styles.keyPositionalIdeas}></View>
+          </View>
+        </View>
+      </ScrollView>
+    </ImageBackground>
   );
 }
 
 const styles = StyleSheet.create({
-  test: {
-    backgroundColor: "#111",
-  },
-  container: {
+  bgimage: {
     flex: 1,
+    backgroundColor: "#111"
+  },
+  scrollContainer: {
+    flexGrow: 1,
+    alignItems: "center",
+    justifyContent: "flex-start",
+  },
+  defaultView: {
+    width: "100%",
+    alignItems: "center"
+  },
+  header: {
+    height: SCREEN_HEIGHT * 0.085,
+    width: "100%",
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    paddingHorizontal: 15
+  },
+  knightLeft: {
+    width: 40,
+    height: 40,
+    resizeMode: "contain",
+  },
+  rightGroup: {
+    flexDirection: "row",
+    alignItems: "flex-end",
+    gap: 10,
+    height: "100%",
+  },
+  knight: {
+    width: 32,
+    height: 32,
+    resizeMode: "contain",
+    marginBottom: 5,
+  },
+  knightParent: {
+    backgroundColor: "#435457ff",
+    width: 35,
+    height: 35,
+    borderRadius: 50,
+    justifyContent: "center",
+    alignItems: "center"
+  },
+  accountStyle: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 10
+  },
+  accountText: {
+    color: "#435457ff",
+    fontSize: 20,
+    fontFamily: "Barlow_600SemiBold",
+  },
+  logoFont: {
+    fontSize: 35,
+    color: "#fff",
+    fontFamily: "Barlow_700Bold"
+  },
+  mainContentReflex: {
+    alignItems: "center",
+    gap: 40,
+    marginTop: 30,
+
+  },
+  playReflex: {
+    width: 200,
+    height: 65,
+    backgroundColor: "#40bab1",
+    borderRadius: 8,
     justifyContent: "center",
     alignItems: "center",
   },
-  text: {
+  PlayReflexPressed: {
+    backgroundColor: "#40a59eff"
+  },
+  playReflexText: {
+    fontSize: 30,
     color: "#fff",
-    marginBottom: 20,
-    fontSize: 18,
+    fontFamily: "Barlow_700Bold"
   },
-  button: {
-    paddingVertical: 12,
-    paddingHorizontal: 24,
-    borderRadius: 8,
+  chessboardContainer: {
+    width: 300,
+    height: 300,
     alignItems: "center",
+    justifyContent: "center"
   },
-  buttonText: {
-    color: "white",
-    fontSize: 16,
-    fontWeight: "bold",
+  infoBox: {
+    width: 300,
+    height: 150,
+    justifyContent: "center",
+    alignItems: "center",
+    gap: 20,
+    outlineColor: "#40bab1",
+    outlineWidth: 5,
+    borderRadius: 8,
+    backgroundColor: "#1e283580",
   },
+  infoBoxTitle: {
+    fontSize: 30,
+    color: "#fff",
+    fontFamily: "Barlow_700Bold"
+
+  },
+  infoBoxText: {
+    fontSize: 15,
+    color: "#fff",
+    fontFamily: "Barlow_600SemiBold",
+    textAlign: "center"
+  },
+  accuracyRating: {
+    padding: 10,
+    width: "45%",
+    height: 300,
+    backgroundColor: "#1e283580",
+    borderRadius: 8,
+    gap: 22
+  },
+  reflexStreak: {
+    padding: 10,
+    width: "45%",
+    height: 300,
+    backgroundColor: "#1e283580",
+    borderRadius: 8,
+    gap: 22
+  },
+  bottomContent: {
+    width: "100%",
+    marginTop: 30,
+    alignItems: "center",
+    gap: 20
+  },
+  topSection: {
+    alignItems: "center",
+    width: "100%",
+    justifyContent: "space-evenly",
+    flexDirection: "row"
+  },
+  keyPositionalIdeas: {
+    padding: 10,
+    width: "92.5%",
+    height: 200,
+    backgroundColor: "#1e283580",
+    borderRadius: 8,
+    flexDirection: "row",
+    gap: 22
+
+  }
 });

@@ -8,14 +8,6 @@ export default function Login({ setSignUpPage, onSuccess }) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
-  const handleLogin = () => {
-    if (email && password) {
-      onSuccess(true); // return success
-      router.push("/(tabs)"); // navigate into your app
-    } else {
-      alert("Please enter email and password");
-    }
-  };
 
   return (
     <ImageBackground source={backgroundimage} style={styles.bgimage} resizeMode="cover">
@@ -46,7 +38,7 @@ export default function Login({ setSignUpPage, onSuccess }) {
             onChangeText={setPassword}
           />
 
-          <Pressable style={styles.loginButton} onPress={handleLogin}>
+          <Pressable style={styles.loginButton}>
             <Text style={styles.loginText}>LOG IN</Text>
           </Pressable>
 

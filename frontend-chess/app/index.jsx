@@ -1,4 +1,4 @@
-import { Text, View, ImageBackground, StyleSheet, Image, Pressable, ScrollView } from "react-native";
+import { Text, View, ImageBackground, StyleSheet, Image, Pressable, ScrollView, Dimensions } from "react-native";
 import { useState, useEffect } from "react";
 import { Ionicons } from "@expo/vector-icons";
 import { useFonts, Barlow_600SemiBold, Barlow_700Bold } from "@expo-google-fonts/barlow";
@@ -9,6 +9,8 @@ import pfp_knight from "../assets/flipped_knight.png"
 import knight from "../assets/knight.png"
 import chessboard from "../assets/chessboard.png"
 import puzzle from "../assets/nobg_board.png"
+
+const { height: SCREEN_HEIGHT } = Dimensions.get("window");
 
 export default function Index() {
   const router = useRouter();
@@ -183,7 +185,7 @@ const styles = StyleSheet.create({
     alignItems: "center"
   },
   header: {
-    height: 84,
+    height: SCREEN_HEIGHT * 0.085,
     width: "100%",
     flexDirection: "row",
     alignItems: "flex-end",

@@ -8,43 +8,6 @@ export default function SignUp({ setSignUpPage, onSuccess }) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
-  // ⚠️ Replace with your computer’s local IP if testing on a physical phone
-  const API_URL = "http://127.0.0.1:8000/signup";
-
-  const handleSignUp = async () => {
-  if (!username || !email || !password) {
-    Alert.alert("Missing fields", "Please fill in all fields.");
-    return;
-  }
-
-  try {
-    const response = await fetch("http://127.0.0.1:8000/signup", {
-      method: "POST", // 🔥 this is crucial
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        username,
-        email,
-        password,
-      }),
-    });
-
-    const data = await response.json();
-    console.log("Response:", data);
-
-    if (response.ok) {
-      Alert.alert("Success", "Account created successfully!");
-      onSuccess(true);
-    } else {
-      Alert.alert("Error", data.detail || "Sign up failed");
-    }
-  } catch (error) {
-    console.error("Signup error:", error);
-    Alert.alert("Network Error", "Could not connect to the server.");
-  }
-};
-
   return (
     <ImageBackground source={backgroundimage} style={styles.bgimage} resizeMode="cover">
       <View style={styles.overlay}>
@@ -83,7 +46,7 @@ export default function SignUp({ setSignUpPage, onSuccess }) {
             onChangeText={setPassword}
           />
 
-          <Pressable style={styles.signupButton} onPress={handleSignUp}>
+          <Pressable style={styles.signupButton} >
             <Text style={styles.signupText}>SIGN UP</Text>
           </Pressable>
 

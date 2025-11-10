@@ -7,49 +7,10 @@ export default function Account() {
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  // ⚙️ Change this to your computer IP if testing on a physical device
-  const API_URL = "http://192.168.1.31:8000/users";
-
-  useEffect(() => {
-    const fetchUsers = async () => {
-      try {
-        const response = await fetch(API_URL);
-        const data = await response.json();
-        if (response.ok) {
-          setUsers(data.users || []);
-        } else {
-          console.error("Error fetching users:", data);
-        }
-      } catch (err) {
-        console.error("Network error:", err);
-      } finally {
-        setLoading(false);
-      }
-    };
-    fetchUsers();
-  }, []);
 
   return (
     <View style={[styles.test, styles.container]}>
       <Text style={styles.title}>Account Screen</Text>
-
-      {loading ? (
-        <ActivityIndicator size="large" color="#4CAF50" />
-      ) : (
-        <ScrollView contentContainerStyle={styles.userList}>
-          {users.length > 0 ? (
-            users.map((user, index) => (
-              <View key={index} style={styles.userBox}>
-                <Text style={styles.userText}>{user.username}</Text>
-                <Text style={styles.emailText}>{user.email}</Text>
-              </View>
-            ))
-          ) : (
-            <Text style={styles.emptyText}>No users found</Text>
-          )}
-        </ScrollView>
-      )}
-
       <Pressable
         onPress={() => router.push("/")}
         style={({ pressed }) => [

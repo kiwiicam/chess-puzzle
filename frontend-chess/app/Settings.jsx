@@ -11,13 +11,13 @@ export default function Settings() {
       <Text style={styles.text}>Settings screen</Text>
 
       <Pressable
-        onPress={() => router.push("/")}
+        onPress={() => router.back()}
         style={({ pressed }) => [
           styles.button,
           { backgroundColor: pressed ? "#388E3C" : "#4CAF50" },
         ]}
       >
-        <Text style={styles.buttonText}>Menu</Text>
+        <Text style={styles.buttonText}>Go back</Text>
       </Pressable>
     </View>
   );

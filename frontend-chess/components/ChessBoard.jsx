@@ -38,11 +38,9 @@ export default function Board({ FEN }) {
     <GestureHandlerRootView style={{ flex: 1 }}>
       <View
         style={{ flex: 1, justifyContent: "center", alignItems: "center" }}
-        pointerEvents="none"
       >
         <Chessboard
           fen={FEN}
-          boardSize={300}
         />
       </View>
     </GestureHandlerRootView>

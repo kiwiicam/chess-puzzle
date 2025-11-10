@@ -1,8 +1,8 @@
 from flask import Blueprint, jsonify
-from controllers.examplecontroller import get_users
+from controllers.examplecontroller import getReflexPuzzle
 
-example_bp = Blueprint('database', __name__, url_prefix='/api/example')
+example_bp = Blueprint('example', __name__, url_prefix='/api/example')
 
-@example_bp.route('/users', methods=['GET'])
+@example_bp.route('/users', methods=['POST'])
 def users():
-    return get_users()
+    return getReflexPuzzle()
