@@ -1,27 +1,51 @@
-import React, { useEffect, useState, useRef } from "react";
-import { View, StyleSheet, Image, Pressable, Animated } from "react-native";
-import Chessboard from 'react-native-chessboard';
-import { GestureHandlerRootView } from 'react-native-gesture-handler';
+import React, { useRef } from "react";
+import { GestureHandlerRootView } from "react-native-gesture-handler";
+import Chessboard from "react-native-chessboard"
+import { Button, Pressable, View } from "react-native";
 
-import P2 from "../assets/ChessPieces/P2.png";
-import R2 from "../assets/ChessPieces/R2.png";
-import N2 from "../assets/ChessPieces/N2.png";
-import B2 from "../assets/ChessPieces/B2.png";
-import Q2 from "../assets/ChessPieces/Q2.png";
-import K2 from "../assets/ChessPieces/K2.png";
+import P2 from "../assets/ChessPieces/P2.png"; // white pawn
+import R2 from "../assets/ChessPieces/R2.png"; // white rook
+import N2 from "../assets/ChessPieces/N2.png"; // white knight
+import B2 from "../assets/ChessPieces/B2.png"; // white bishop
+import Q2 from "../assets/ChessPieces/Q2.png"; // white queen
+import K2 from "../assets/ChessPieces/K2.png"; // white king
 
-import p from "../assets/ChessPieces/p.png";
-import r from "../assets/ChessPieces/r.png";
-import n from "../assets/ChessPieces/n.png";
-import b from "../assets/ChessPieces/b.png";
-import q from "../assets/ChessPieces/q.png";
-import k from "../assets/ChessPieces/k.png";
+import p from "../assets/ChessPieces/p.png"; // black pawn
+import r from "../assets/ChessPieces/r.png"; // black rook
+import n from "../assets/ChessPieces/n.png"; // black knight
+import b from "../assets/ChessPieces/b.png"; // black bishop
+import q from "../assets/ChessPieces/q.png"; // black queen
+import k from "../assets/ChessPieces/k.png"; // black king
 
 
-export default function Board({ FEN, chessObj }) {
+export default function Board({ FEN }) {
+  const pieceImages = {
+    P: P2,
+    R: R2,
+    N: N2,
+    B: B2,
+    Q: Q2,
+    K: K2,
+    p: p,
+    r: r,
+    n: n,
+    b: b,
+    q: q,
+    k: k
+  };
+
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
-      <Chessboard fen={FEN} />
+      <View
+        style={{ flex: 1, justifyContent: "center", alignItems: "center" }}
+        pointerEvents="none"
+      >
+        <Chessboard
+          fen={FEN}
+          boardSize={300}
+        />
+      </View>
     </GestureHandlerRootView>
+
   );
 }
