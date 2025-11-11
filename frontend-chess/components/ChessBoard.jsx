@@ -19,6 +19,9 @@ import k from "../assets/ChessPieces/k.png"; // black king
 
 
 export default function Board({ FEN }) {
+
+  const chessboardRef = useRef(null);
+
   const pieceImages = {
     P: P2,
     R: R2,
@@ -34,13 +37,25 @@ export default function Board({ FEN }) {
     k: k
   };
 
+  const handleMove = ({ move, state }) => {
+    console.log("Move made:", move);
+    console.log("From:", move?.from);
+    console.log("To:", move?.to);
+    console.log("Piece:", move?.piece);
+    console.log("Updated FEN:", state.fen);
+  };
+
+
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
       <View
         style={{ flex: 1, justifyContent: "center", alignItems: "center" }}
       >
         <Chessboard
+          ref={chessboardRef}
           fen={FEN}
+          boardSize={375}
+          onMove={handleMove}
         />
       </View>
     </GestureHandlerRootView>

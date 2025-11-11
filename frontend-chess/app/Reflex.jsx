@@ -55,7 +55,14 @@ export default function Reflex() {
             <Pressable style={({ pressed }) => [
               styles.playReflex,
               pressed && styles.PlayReflexPressed,
-            ]}>
+            ]}
+              onPress={() =>
+                router.push({
+                  pathname: "/reflex/[ReflexFen]",
+                  params: { fen: "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1", elo: "1500-2100" },
+                })
+              }
+            >
               <Text style={styles.playReflexText}>Play Reflex</Text>
             </Pressable>
             <View style={styles.infoBox}>

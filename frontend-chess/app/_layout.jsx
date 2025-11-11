@@ -20,12 +20,10 @@ export default function TabsLayout() {
         options={{
           title: "Home",
           tabBarIcon: ({ color, size }) => (
-            <MaterialCommunityIcons  name="chess-king" size={size} color={color} />
+            <MaterialCommunityIcons name="chess-king" size={size} color={color} />
           ),
         }}
       />
-
-
 
       <Tabs.Screen
         name="Reflex"
@@ -51,7 +49,7 @@ export default function TabsLayout() {
         }}
       />
 
-        <Tabs.Screen
+      <Tabs.Screen
         name="Judgement"
         options={{
           title: "Judgement",
@@ -71,7 +69,7 @@ export default function TabsLayout() {
         }}
       />
 
-        <Tabs.Screen
+      <Tabs.Screen
         name="Sandbox"
         options={{
           href: null,
@@ -81,7 +79,7 @@ export default function TabsLayout() {
           ),
         }}
       />
-      
+
       <Tabs.Screen
         name="Settings"
         options={{
@@ -96,14 +94,14 @@ export default function TabsLayout() {
         name="Authentication"
         options={{
           href: null,
-          title: "Authentication",
-          tabBarIcon: ({ color, size }) => (
-            <Ionicons name="options" size={size} color={color} />
-          ),
         }}
       />
-
-
+      <Tabs.Screen
+        name="reflex/[ReflexFen]"
+        options={{
+          href: null,
+        }}
+      />
 
     </Tabs>
 
