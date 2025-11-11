@@ -2,13 +2,44 @@ import { useFocusEffect } from "expo-router";
 import React, { useRef, useCallback } from "react";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import Chessboard from "react-native-chessboard";
-import { View, StyleSheet, Text } from "react-native";
+import { View, StyleSheet, Text, Image } from "react-native";
+
+
+import P2 from "../assets/ChessPieces/P2.png"; // pawn
+import R2 from "../assets/ChessPieces/R2.png"; // rook
+import N2 from "../assets/ChessPieces/N2.png"; // knight
+import B2 from "../assets/ChessPieces/B2.png"; // bishop
+import Q2 from "../assets/ChessPieces/Q2.png"; // queen
+import K2 from "../assets/ChessPieces/K2.png"; // king
+
+import p from "../assets/ChessPieces/p.png"; // pawn
+import r from "../assets/ChessPieces/r.png"; // rook
+import n from "../assets/ChessPieces/n.png"; // knight
+import b from "../assets/ChessPieces/b.png"; // bishop
+import q from "../assets/ChessPieces/q.png"; // queen
+import k from "../assets/ChessPieces/k.png"; // king
+
 
 export default function MovingBoard({ FEN }) {
   const ranks = ["8", "7", "6", "5", "4", "3", "2", "1"];
   const files = ["a", "b", "c", "d", "e", "f", "g", "h"];
   const chessboardRef = useRef(null);
 
+
+  const pieceMap = {
+    wp: P2, // white pawn
+    wr: R2,
+    wn: N2,
+    wb: B2,
+    wq: Q2,
+    wk: K2,
+    bp: p,  // black pawn
+    br: r,
+    bn: n,
+    bb: b,
+    bq: q,
+    bk: k,
+  };
   useFocusEffect(
     useCallback(() => {
       let cancelled = false;
@@ -72,6 +103,11 @@ export default function MovingBoard({ FEN }) {
             durations={{ move: 500 }}
             withLetters={false}
             withNumbers={false}
+          /*renderPiece={(piece) => {
+            const image = pieceMap[piece];
+            if (!image) return null; // fallback
+            return <Image source={image} style={{ width: 35, height: 35 }} />;
+          }*/
           />
         </View>
       </View>
