@@ -12,7 +12,6 @@ export default function TabsLayout() {
         headerShown: false,
         tabBarActiveTintColor: "#4CAF50",
         tabBarStyle: { backgroundColor: "#121212", borderTopColor: "#333" },
-        lazy: false,
       }}
     >
       <Tabs.Screen
@@ -27,9 +26,8 @@ export default function TabsLayout() {
 
       <Tabs.Screen
         name="Reflex"
-
         options={{
-
+          lazy: false,
           title: "Reflex",
           tabBarIcon: ({ color, size }) => (
             <Ionicons name="flash-sharp" size={size} color={color} />

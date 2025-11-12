@@ -1,64 +1,129 @@
-import React, { useRef } from "react";
+import React, { useRef, forwardRef, useImperativeHandle, useEffect } from "react";
+import { View, StyleSheet, Text, Alert } from "react-native";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
-import Chessboard from "react-native-chessboard"
-import { Button, Pressable, View } from "react-native";
+import Chessboard from 'react-native-chessboard';
 
-import P2 from "../assets/ChessPieces/P2.png"; // white pawn
-import R2 from "../assets/ChessPieces/R2.png"; // white rook
-import N2 from "../assets/ChessPieces/N2.png"; // white knight
-import B2 from "../assets/ChessPieces/B2.png"; // white bishop
-import Q2 from "../assets/ChessPieces/Q2.png"; // white queen
-import K2 from "../assets/ChessPieces/K2.png"; // white king
+const Board = forwardRef(({ FEN }, ref) => {
 
-import p from "../assets/ChessPieces/p.png"; // black pawn
-import r from "../assets/ChessPieces/r.png"; // black rook
-import n from "../assets/ChessPieces/n.png"; // black knight
-import b from "../assets/ChessPieces/b.png"; // black bishop
-import q from "../assets/ChessPieces/q.png"; // black queen
-import k from "../assets/ChessPieces/k.png"; // black king
-
-
-export default function Board({ FEN }) {
+  const ranks = ["8", "7", "6", "5", "4", "3", "2", "1"];
+  const files = ["a", "b", "c", "d", "e", "f", "g", "h"];
 
   const chessboardRef = useRef(null);
+  const moveStack = useRef([]);
 
-  const pieceImages = {
-    P: P2,
-    R: R2,
-    N: N2,
-    B: B2,
-    Q: Q2,
-    K: K2,
-    p: p,
-    r: r,
-    n: n,
-    b: b,
-    q: q,
-    k: k
+  useEffect(() => {
+    moveStack.current.push(FEN);
+  }, []);
+
+  useImperativeHandle(ref, () => ({
+    undo: () => {
+      console.log(moveStack.current)
+      moveStack.current.pop()
+      const newFen = moveStack.current[moveStack.current.length - 1]
+      chessboardRef.current?.resetBoard(newFen);
+    },
+    getMoveStack: () => moveStack.current,
+  }));
+
+  const updateMoveStack = () => {
+    const state = chessboardRef.current?.getState()
+    moveStack.current.push(state.fen);
   };
-
-  const handleMove = ({ move, state }) => {
-    console.log("Move made:", move);
-    console.log("From:", move?.from);
-    console.log("To:", move?.to);
-    console.log("Piece:", move?.piece);
-    console.log("Updated FEN:", state.fen);
-  };
-
 
   return (
-    <GestureHandlerRootView style={{ flex: 1 }}>
-      <View
-        style={{ flex: 1, justifyContent: "center", alignItems: "center" }}
-      >
-        <Chessboard
-          ref={chessboardRef}
-          fen={FEN}
-          boardSize={375}
-          onMove={handleMove}
-        />
+    <GestureHandlerRootView>
+      <View style={styles.wrapper}>
+        <View style={styles.top} />
+        <View style={styles.bottom}>
+          {files.map((f, index) => (
+            <Text key={`bottom-${index}`} style={[styles.label, { paddingTop: 5 }]}>
+              {f}
+            </Text>
+          ))}
+        </View>
+        <View style={styles.left}>
+          {ranks.map((r, index) => (
+            <Text key={`left-${index}`} style={[styles.label, { paddingRight: 5 }]}>
+              {r}
+            </Text>
+          ))}
+        </View>
+        <View style={styles.right} />
+        <View style={styles.board}>
+          <Chessboard
+            fen={FEN}
+            boardSize={320}
+            colors={{
+              black: "#5b7789",
+              white: "#c2dce2",
+              lastMoveHighlight: "rgba(255,255,0, 0.0)",
+            }}
+            ref={chessboardRef}
+            withLetters={false}
+            withNumbers={false}
+            onMove={() => updateMoveStack()}
+          />
+        </View>
       </View>
     </GestureHandlerRootView>
-
   );
-}
+});
+
+const styles = StyleSheet.create({
+  wrapper: {
+    width: 350,
+    height: 350,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  top: {
+    position: "absolute",
+    top: 0,
+    width: "100%",
+    height: 20,
+    borderRadius: 8,
+    backgroundColor: "#364959",
+  },
+  bottom: {
+    justifyContent: "space-evenly",
+    flexDirection: "row",
+    alignItems: "center",
+    position: "absolute",
+    bottom: 0,
+    width: "100%",
+    height: 20,
+    borderRadius: 8,
+    backgroundColor: "#364959",
+  },
+  left: {
+    justifyContent: "space-evenly",
+    flexDirection: "column",
+    alignItems: "center",
+    position: "absolute",
+    left: 0,
+    height: "100%",
+    width: 20,
+    borderRadius: 8,
+    backgroundColor: "#364959",
+  },
+  right: {
+    position: "absolute",
+    right: 0,
+    height: "100%",
+    width: 20,
+    borderRadius: 8,
+    backgroundColor: "#364959",
+  },
+  board: {
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  label: {
+    color: "#6f8393",
+    fontSize: 12,
+
+  },
+});
+
+
+export default Board;

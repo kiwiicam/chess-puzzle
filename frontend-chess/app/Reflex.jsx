@@ -8,6 +8,7 @@ import MovingBoard from "../components/MovingChessBoard"
 import backgroundimage from "../assets/homescreenbg.png";
 import pfp_knight from "../assets/flipped_knight.png";
 import knight from "../assets/knight.png";
+import { useEffect, useState } from "react";
 
 const { height: SCREEN_HEIGHT } = Dimensions.get("window");
 
@@ -17,7 +18,11 @@ export default function Reflex() {
     Barlow_600SemiBold,
     Barlow_700Bold,
   });
-
+  const fenList = [
+    "qnbrkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1",
+    "7q/p2p2P1/3P2K1/1Pnp4/2p5/r2pn3/1r3k2/7b w - - 0 1",
+    "3n1Nb1/r2QRnP1/pB1P3p/Ppp1PpP1/1Nq2pr1/pPp1bK2/2R2P1P/3Bk3 w - - 0 1"
+  ]
   if (!fontsLoaded) return null;//MUST BE AFTER ANY USE EFFECT
 
   return (
@@ -52,16 +57,18 @@ export default function Reflex() {
             <View style={styles.chessboardContainer}>
               <MovingBoard />
             </View>
-            <Pressable style={({ pressed }) => [
-              styles.playReflex,
-              pressed && styles.PlayReflexPressed,
-            ]}
-              onPress={() =>
+            <Pressable
+              style={({ pressed }) => [
+                styles.playReflex,
+                pressed && styles.PlayReflexPressed,
+              ]}
+              onPress={() => {
+                const randomFenNum = Math.floor(Math.random() * fenList.length);
                 router.push({
-                  pathname: "/reflex/[ReflexFen]",
-                  params: { fen: "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1", elo: "1500-2100" },
-                })
-              }
+                  pathname: `/reflex/${encodeURIComponent(fenList[randomFenNum])}`,
+                  params: { fen: fenList[randomFenNum], elo: "1500-1600", t: Date.now() },
+                });
+              }}
             >
               <Text style={styles.playReflexText}>Play Reflex</Text>
             </Pressable>
@@ -79,7 +86,7 @@ export default function Reflex() {
           </View>
         </View>
       </ScrollView>
-    </ImageBackground>
+    </ImageBackground >
   );
 }
 
