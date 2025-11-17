@@ -2,11 +2,111 @@ import { useState } from "react";
 import { View, Text, TextInput, Pressable, StyleSheet, ImageBackground, Image, Alert } from "react-native";
 import backgroundimage from "../../assets/homescreenbg.png";
 import knight from "../../assets/knight.png";
+import * as WebBrowser from "expo-web-browser";
+import * as AuthSession from "expo-auth-session";
+
+WebBrowser.maybeCompleteAuthSession();
 
 export default function SignUp({ setSignUpPage, onSuccess }) {
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+const COGNITO_DOMAIN = "ap-southeast-2ednlm3tex.auth.ap-southeast-2.amazoncognito.com";
+const COGNITO_CLIENT_ID = "6922fp8fanlh6i04m1t7u1gsci";
+
+const REDIRECT_URI = "frontendchess://auth";
+
+
+console.log("Generated redirect URI:", REDIRECT_URI);
+
+const discovery = {
+  authorizationEndpoint: `https://${COGNITO_DOMAIN}/oauth2/authorize`,
+  tokenEndpoint: `https://${COGNITO_DOMAIN}/oauth2/token`,
+};
+
+const [request, result, promptAsync] = AuthSession.useAuthRequest(
+  {
+    clientId: COGNITO_CLIENT_ID,
+    redirectUri: REDIRECT_URI,
+    responseType: "code",
+    useProxy: false, // REQUIRED
+    scopes: ["openid", "email", "profile"],
+    extraParams: {
+      identity_provider: "Google",
+    },
+  },
+  discovery
+);
+
+console.log("Auth request object:", request);
+console.log("FINAL LOGIN URL:", request?.url);
+
+
+
+  const handleGoogleLogin = async () => {
+  try {
+    const res = await promptAsync();
+
+    console.log("Google result:", res);
+
+    if (res.type === "success") {
+      const code = res.params.code;
+
+      const response = await fetch("http://192.168.1.31:8000/api/auth/google", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ code }),
+      });
+
+      const data = await response.json();
+      console.log("Backend Google result:", data);
+    }
+  } catch (e) {
+    console.log("Google login error:", e);
+  }
+};
+
+
+
+
+  const handleSignUp = async () => {
+  console.log("SIGNUP BUTTON PRESSED"); // Debug log
+
+  if (!username || !email || !password) {
+    return Alert.alert("Missing fields", "Please fill out all fields");
+  }
+
+  try {
+    const response = await fetch("http://192.168.1.31:8000/api/auth/signup", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        username,
+        email,
+        password,
+      }),
+    });
+
+    const data = await response.json();
+    console.log("Signup response:", data);
+
+    if (response.ok) {
+      Alert.alert(
+        "Verify Your Email",
+        "A verification code was sent to your email.",
+        [{ text: "OK", onPress: () => onSuccess(email) }]
+      );
+    } else {
+      Alert.alert("Sign Up Failed", data.error || "Something went wrong");
+    }
+  } catch (err) {
+    console.error("Signup error:", err);
+    Alert.alert("Network error", "Please try again later.");
+  }
+};
+
 
   return (
     <ImageBackground source={backgroundimage} style={styles.bgimage} resizeMode="cover">
@@ -46,19 +146,19 @@ export default function SignUp({ setSignUpPage, onSuccess }) {
             onChangeText={setPassword}
           />
 
-          <Pressable style={styles.signupButton} >
+          <Pressable style={styles.signupButton} onPress={handleSignUp}>
             <Text style={styles.signupText}>SIGN UP</Text>
           </Pressable>
 
           <Text style={styles.orText}>OR</Text>
 
           <View style={styles.socialRow}>
-            <Pressable style={styles.socialButton}>
-              <Text style={styles.socialText}>G</Text>
-            </Pressable>
-            <Pressable style={styles.socialButton}>
-              <Text style={styles.socialText}>f</Text>
-            </Pressable>
+            <Pressable style={styles.socialButton} onPress={handleGoogleLogin}>
+  <Text style={styles.socialText}>G</Text>
+</Pressable>
+
+
+            
           </View>
         </View>
 

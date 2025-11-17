@@ -1,6 +1,5 @@
 import { useState } from "react";
-import { View, Text, TextInput, Pressable, StyleSheet, ImageBackground, Image } from "react-native";
-import { router } from "expo-router";
+import { View, Text, TextInput, Pressable, StyleSheet, ImageBackground, Image, Alert } from "react-native";
 import backgroundimage from "../../assets/homescreenbg.png";
 import knight from "../../assets/knight.png";
 
@@ -8,17 +7,44 @@ export default function Login({ setSignUpPage, onSuccess }) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
+  const handleLogin = async () => {
+    if (!email || !password) {
+      return Alert.alert("Missing fields", "Please enter email and password.");
+    }
+
+    try {
+      const response = await fetch("http://192.168.1.31:8000/api/auth/login", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ email, password }),
+      });
+
+      const data = await response.json();
+      console.log("Login response:", data);
+
+      if (response.ok) {
+        Alert.alert("Success", "Login successful!", [
+          { text: "OK", onPress: () => onSuccess(data.tokens) },
+        ]);
+      } else {
+        Alert.alert("Login Failed", data.error || "Incorrect email or password.");
+      }
+    } catch (err) {
+      console.error(err);
+      Alert.alert("Network Error", "Unable to connect to the server.");
+    }
+  };
 
   return (
     <ImageBackground source={backgroundimage} style={styles.bgimage} resizeMode="cover">
       <View style={styles.overlay}>
-        {/* Logo */}
         <View style={styles.logoContainer}>
           <Image source={knight} style={styles.knightImg} />
           <Text style={styles.logoTitle}>UNLIMITED CHESS</Text>
         </View>
 
-        {/* Login card */}
         <View style={styles.card}>
           <Text style={styles.title}>LOG IN TO YOUR ACCOUNT</Text>
 
@@ -28,7 +54,9 @@ export default function Login({ setSignUpPage, onSuccess }) {
             placeholderTextColor="#aaa"
             value={email}
             onChangeText={setEmail}
+            autoCapitalize="none"
           />
+
           <TextInput
             style={styles.input}
             placeholder="PASSWORD"
@@ -38,7 +66,7 @@ export default function Login({ setSignUpPage, onSuccess }) {
             onChangeText={setPassword}
           />
 
-          <Pressable style={styles.loginButton}>
+          <Pressable style={styles.loginButton} onPress={handleLogin}>
             <Text style={styles.loginText}>LOG IN</Text>
           </Pressable>
 
@@ -48,13 +76,13 @@ export default function Login({ setSignUpPage, onSuccess }) {
             <Pressable style={styles.socialButton}>
               <Text style={styles.socialText}>G</Text>
             </Pressable>
+
             <Pressable style={styles.socialButton}>
               <Text style={styles.socialText}>f</Text>
             </Pressable>
           </View>
         </View>
 
-        {/* Footer */}
         <Text style={styles.footerText}>
           Don't have an account?{" "}
           <Text style={styles.signUpLink} onPress={() => setSignUpPage(true)}>
