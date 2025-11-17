@@ -1,16 +1,15 @@
 import { Text, View, StyleSheet, Alert, ImageBackground, Pressable } from "react-native";
 import { useRouter, useLocalSearchParams } from "expo-router";
-import { useEffect, useRef, useState, useCallback } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Ionicons } from "@expo/vector-icons";
 import { useFonts, Barlow_600SemiBold, Barlow_700Bold } from "@expo-google-fonts/barlow";
-import { CountdownCircleTimer } from "react-native-countdown-circle-timer"
+import { CountdownCircleTimer } from "react-native-countdown-circle-timer";
 import { ScrollView } from "react-native";
-
+import { LinearGradient } from "expo-linear-gradient";
 
 import Board from "../../components/ChessBoard";
 
 import backgroundimage from "../../assets/homescreenbg.png";
-
 
 export default function PlayReflex() {
     const router = useRouter();
@@ -18,10 +17,13 @@ export default function PlayReflex() {
     const boardRef = useRef(null);
 
     //states
-    const [playing, setPlaying] = useState(true)
-    const [userTurn, setUserTurn] = useState(true)
-    const [wrongMove, setWrongMove] = useState(false)
-    const [moveCount, setMoveCount] = useState(0)
+    const [playing, setPlaying] = useState(true);
+    const [moveList, setMoveList] = useState([]);
+    const [movePlayed, setMovePlayed] = useState(false);
+    const [correctMove, setCorrectMove] = useState(false);
+    const [isDisabled, setIsDisabled] = useState(false);
+
+    const [message, setMessage] = useState("")
 
     const [fontsLoaded] = useFonts({
         Barlow_600SemiBold,
@@ -29,31 +31,53 @@ export default function PlayReflex() {
     });
 
     useEffect(() => {
-        const timer = setTimeout(() => {
-            if (!boardRef.current) return;
-
-            const toMove = fen.split(" ")[1];
-            if (toMove === "b") {
-                const [first] = moves.split(" ");
-                const from = first.slice(0, 2);
-                const to = first.slice(2, 4);
-                console.log(from, to);
-                boardRef.current.makeMove({ from, to });
-            }
-        }, 400);
-
-        return () => clearTimeout(timer);
+        setMoveList([
+            { move: 'g2g4', Centipawn: 115, Mate: null },
+            { move: 'c1b1', Centipawn: 111, Mate: null },
+            { move: 'a2a3', Centipawn: 98, Mate: null },
+            { move: 'h2h4', Centipawn: 94, Mate: null },
+            { move: 'h1g1', Centipawn: 74, Mate: null }
+        ]);
     }, []);
 
+    useEffect(() => {
+        setPlaying(true);
+        setMovePlayed(false);
+        setCorrectMove(false);
+        setIsDisabled(false);
+        setMessage("");
+    }, [fen, t]);
+
     const userMakesMove = async (moveObject) => {
+        const move = moveObject.move.from + moveObject.move.to;
+        const isInList = moveList.some(item => item.move === move);
+        setCorrectMove(isInList);
+        setMessage(isInList ? "Congratulations your move was in the top 5 moves in this position!" : "Unlucky! your move was not in the top 5 moves!")
+        setMovePlayed(true);
+        setIsDisabled(true);
+        setPlaying(false);
+    };
 
-    }
+    const undoMove = () => { };
 
-    const undoMove = () => {
+    const nextPuzzle = () => {
+        router.replace({
+            pathname: `/reflex/${encodeURIComponent(fen)}`,
+            params: { fen: fen, elo: "1500-1600", t: Date.now() },
+        });
+    };
 
-    }
+    const outOfTime = () => {
+        setTimeout(() => {
+            setMessage("Unfortunately you ran out of time.")
+            setCorrectMove(false)
+            setMovePlayed(true);
+            setIsDisabled(true);
+            setPlaying(false);
+        }, 100);
+    };
 
-    if (!fontsLoaded) return null;//MUST BE AFTER ANY USE EFFECT
+    if (!fontsLoaded) return null; //MUST BE AFTER ANY USE EFFECT
 
     return (
         <ImageBackground
@@ -68,63 +92,78 @@ export default function PlayReflex() {
                     <View style={styles.leftTopBar}>
                         <Text style={styles.eloText}>ELO: {elo} </Text>
                         <Pressable
-                            onPress={() => setPlaying((prev) => !prev)}
+                            onPress={() => nextPuzzle()}
                             style={({ pressed }) => [
                                 styles.pauseBox,
                                 pressed && styles.pauseBoxPressed,
                             ]}>
-                            {playing ? <Ionicons name="pause" size={30} color={"#fff"} /> : <Ionicons name="play" size={30} color={"#fff"} style={{ paddingLeft: 4 }} />}
+                            <Ionicons name="play-forward" size={30} color={"#fff"} />
                         </Pressable>
                         <Ionicons name="bulb-outline" size={30} color={"#fff"} />
                     </View>
                 </View>
 
-                <View style={styles.chessboardContainer}>
+                <View style={styles.chessboardContainer} pointerEvents={isDisabled ? "none" : "auto"}>
                     <Board
                         FEN={fen}
                         parentFunc={userMakesMove}
                         ref={boardRef}
                     />
-                    {playing ?
-                        <></> : <View style={styles.hiddenBox}><Text style={styles.reflexPuzzleText}>Un-pause to see the board!</Text></View>
-                    }
                 </View>
 
                 <View style={styles.bottomBox}>
                     <CountdownCircleTimer
                         isPlaying={playing}
-                        duration={180}
+                        duration={15}
                         colors={['#498a89']}
                         trailColor={"#66ddcd"}
-                        size={90}
+                        size={100}
                         strokeLinecap={"square"}
                         strokeWidth={10}
+                        onComplete={() => outOfTime()}
                     >
                         {({ remainingTime }) => {
-                            const minutes = Math.floor(remainingTime / 60);
                             const seconds = remainingTime % 60;
-                            return <Text style={styles.timerText}>{`${minutes}:${seconds < 10 ? '0' : ''}${seconds}`}</Text>;
+                            return <Text style={styles.timerText}>{seconds}</Text>;
                         }}
                     </CountdownCircleTimer>
-                    <View>
-                        {wrongMove
-                            ?
-                            <View style={styles.wrongMoveView}>
-                                <Text style={styles.wrongMoveText}>Wrong Move!</Text>
-                                <Pressable style={styles.undoButton} onPress={() => undoMove()}>
-                                    <Text style={styles.undoText}>Undo?</Text>
-                                </Pressable>
-                            </View>
-                            :
-                            <Text style={userTurn ? styles.reflexPuzzleText : styles.reflexPuzzleTextBlack}>{userTurn ? "Your Turn (White)" : "Opponents Turn (Black)"}</Text>
-                        }
+
+                    <View style={{ flex: 1, justifyContent: "center" }}>
+                        {movePlayed ? (
+                            <LinearGradient
+                                colors={correctMove ? ['#16a34a', '#4ade80'] : ['#ef4444', '#f87171']}
+                                start={{ x: 0, y: 0 }}
+                                end={{ x: 1, y: 0 }}
+                                style={{
+                                    borderRadius: 12,
+                                    padding: 12,
+                                    alignItems: "center",
+                                    justifyContent: "center",
+                                }}
+                            >
+                                <View style={{ flexDirection: "row", alignItems: "center", gap: 10, marginBottom: 5 }}>
+                                    <Text style={styles.reflexPuzzleText}>
+                                        {correctMove ? "Well done!" : "Bad Move!"}
+                                    </Text>
+                                    <View style={{ backgroundColor: "rgba(255,255,255,0.2)", borderRadius: 8, padding: 5 }}>
+                                        <Ionicons
+                                            name={correctMove ? "checkmark-outline" : "close-outline"}
+                                            size={25}
+                                            color="#fff"
+                                        />
+                                    </View>
+                                </View>
+                                <Text style={{ color: "#fff", textAlign: "center", fontFamily: "Barlow_600SemiBold" }}>
+                                    {message}
+                                </Text>
+                            </LinearGradient>
+                        ) : (
+                            <Text style={styles.reflexPuzzleText}>Your Turn (White)</Text>
+                        )}
                     </View>
-
-
                 </View>
-
             </ScrollView>
-        </ImageBackground >
+        </ImageBackground>
     );
 }
 
@@ -153,7 +192,7 @@ const styles = StyleSheet.create({
     },
     bottomBox: {
         width: "94%",
-        height: 120,
+        height: 160,
         backgroundColor: "#1e283580",
         borderRadius: 8,
         flexDirection: "row",
@@ -183,7 +222,8 @@ const styles = StyleSheet.create({
         alignItems: "center",
         justifyContent: "center",
         backgroundColor: "#40bab1",
-        borderRadius: 8
+        borderRadius: 8,
+        paddingLeft: 2
     },
     pauseBoxPressed: {
         backgroundColor: "#40a59eff",
@@ -192,7 +232,6 @@ const styles = StyleSheet.create({
         fontSize: 29,
         color: "#498a89",
         fontFamily: "Barlow_700Bold",
-
     },
     hiddenBox: {
         position: "absolute",
@@ -228,12 +267,10 @@ const styles = StyleSheet.create({
         fontSize: 25,
         color: "#992929ff",
         fontFamily: "Barlow_600SemiBold",
-
     },
     undoText: {
         fontSize: 15,
         color: "#ffffffff",
         fontFamily: "Barlow_700Bold",
     }
-
 });

@@ -18,9 +18,11 @@ export default function Reflex() {
     Barlow_600SemiBold,
     Barlow_700Bold,
   });
-  const fenList = [
-    { fen: "6k1/5ppp/5nb1/pp6/6rP/5N1Q/Pq2r1P1/3R2RK b - - 4 32", moves: "g6e4 d1d8 f6e8 d8e8" },
-  ]
+
+  useEffect(() => {
+    
+  })
+
   if (!fontsLoaded) return null;//MUST BE AFTER ANY USE EFFECT
 
   return (
@@ -64,7 +66,7 @@ export default function Reflex() {
                 const randomFenNum = Math.floor(Math.random() * fenList.length);
                 router.push({
                   pathname: `/reflex/${encodeURIComponent(fenList[randomFenNum].fen)}`,
-                  params: { fen: fenList[randomFenNum].fen, elo: "1500-1600", moves: fenList[randomFenNum].moves, t: Date.now() },
+                  params: { fen: fenList[randomFenNum].fen, elo: "1500-1600", t: Date.now() },
                 });
               }}
             >
@@ -72,7 +74,7 @@ export default function Reflex() {
             </Pressable>
             <View style={styles.infoBox}>
               <Text style={styles.infoBoxTitle}>Reflex:</Text>
-              <Text style={styles.infoBoxText}>Your Task: Find the most well balanced move (or 2-move sequence) to maintain equality or gain a slight positional advantage. With a 3 minute time per move will your reflexes be enough? </Text>
+              <Text style={styles.infoBoxText}>Your Task: Find the most well balanced move to maintain equality or gain a slight positional advantage. With a 15 second time per move will your reflexes be enough? </Text>
             </View>
           </View>
           <View style={styles.bottomContent}>
