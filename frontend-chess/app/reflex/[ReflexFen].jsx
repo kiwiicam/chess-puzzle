@@ -14,17 +14,44 @@ import backgroundimage from "../../assets/homescreenbg.png";
 
 export default function PlayReflex() {
     const router = useRouter();
-    const { fen, elo, t } = useLocalSearchParams();
+    const { fen, moves, elo, t } = useLocalSearchParams();
     const boardRef = useRef(null);
 
     //states
     const [playing, setPlaying] = useState(true)
     const [userTurn, setUserTurn] = useState(true)
+    const [wrongMove, setWrongMove] = useState(false)
+    const [moveCount, setMoveCount] = useState(0)
 
     const [fontsLoaded] = useFonts({
         Barlow_600SemiBold,
         Barlow_700Bold,
     });
+
+    useEffect(() => {
+        const timer = setTimeout(() => {
+            if (!boardRef.current) return;
+
+            const toMove = fen.split(" ")[1];
+            if (toMove === "b") {
+                const [first] = moves.split(" ");
+                const from = first.slice(0, 2);
+                const to = first.slice(2, 4);
+                console.log(from, to);
+                boardRef.current.makeMove({ from, to });
+            }
+        }, 400);
+
+        return () => clearTimeout(timer);
+    }, []);
+
+    const userMakesMove = async (moveObject) => {
+
+    }
+
+    const undoMove = () => {
+
+    }
 
     if (!fontsLoaded) return null;//MUST BE AFTER ANY USE EFFECT
 
@@ -55,6 +82,7 @@ export default function PlayReflex() {
                 <View style={styles.chessboardContainer}>
                     <Board
                         FEN={fen}
+                        parentFunc={userMakesMove}
                         ref={boardRef}
                     />
                     {playing ?
@@ -79,7 +107,17 @@ export default function PlayReflex() {
                         }}
                     </CountdownCircleTimer>
                     <View>
-                        <Text style={userTurn ? styles.reflexPuzzleText : styles.reflexPuzzleTextBlack}>{userTurn ? "Your Turn (White)" : "Opponents Turn (Black)"}</Text>
+                        {wrongMove
+                            ?
+                            <View style={styles.wrongMoveView}>
+                                <Text style={styles.wrongMoveText}>Wrong Move!</Text>
+                                <Pressable style={styles.undoButton} onPress={() => undoMove()}>
+                                    <Text style={styles.undoText}>Undo?</Text>
+                                </Pressable>
+                            </View>
+                            :
+                            <Text style={userTurn ? styles.reflexPuzzleText : styles.reflexPuzzleTextBlack}>{userTurn ? "Your Turn (White)" : "Opponents Turn (Black)"}</Text>
+                        }
                     </View>
 
 
@@ -173,7 +211,29 @@ const styles = StyleSheet.create({
         fontSize: 23,
         color: "#000000ff",
         fontFamily: "Barlow_700Bold",
+    },
+    undoButton: {
+        backgroundColor: "#40bab1",
+        width: 100,
+        height: 40,
+        justifyContent: "center",
+        alignItems: "center",
+        borderRadius: 8
+    },
+    wrongMoveView: {
+        height: "100%",
+        gap: 20
+    },
+    wrongMoveText: {
+        fontSize: 25,
+        color: "#992929ff",
+        fontFamily: "Barlow_600SemiBold",
 
+    },
+    undoText: {
+        fontSize: 15,
+        color: "#ffffffff",
+        fontFamily: "Barlow_700Bold",
     }
 
 });

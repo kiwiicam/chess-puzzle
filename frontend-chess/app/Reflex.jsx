@@ -19,9 +19,7 @@ export default function Reflex() {
     Barlow_700Bold,
   });
   const fenList = [
-    "qnbrkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1",
-    "7q/p2p2P1/3P2K1/1Pnp4/2p5/r2pn3/1r3k2/7b w - - 0 1",
-    "3n1Nb1/r2QRnP1/pB1P3p/Ppp1PpP1/1Nq2pr1/pPp1bK2/2R2P1P/3Bk3 w - - 0 1"
+    { fen: "6k1/5ppp/5nb1/pp6/6rP/5N1Q/Pq2r1P1/3R2RK b - - 4 32", moves: "g6e4 d1d8 f6e8 d8e8" },
   ]
   if (!fontsLoaded) return null;//MUST BE AFTER ANY USE EFFECT
 
@@ -65,8 +63,8 @@ export default function Reflex() {
               onPress={() => {
                 const randomFenNum = Math.floor(Math.random() * fenList.length);
                 router.push({
-                  pathname: `/reflex/${encodeURIComponent(fenList[randomFenNum])}`,
-                  params: { fen: fenList[randomFenNum], elo: "1500-1600", t: Date.now() },
+                  pathname: `/reflex/${encodeURIComponent(fenList[randomFenNum].fen)}`,
+                  params: { fen: fenList[randomFenNum].fen, elo: "1500-1600", moves: fenList[randomFenNum].moves, t: Date.now() },
                 });
               }}
             >

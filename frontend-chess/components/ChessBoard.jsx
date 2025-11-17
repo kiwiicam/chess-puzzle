@@ -3,7 +3,7 @@ import { View, StyleSheet, Text, Alert } from "react-native";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import Chessboard from 'react-native-chessboard';
 
-const Board = forwardRef(({ FEN }, ref) => {
+const Board = forwardRef(({ FEN, parentFunc }, ref) => {
 
   const ranks = ["8", "7", "6", "5", "4", "3", "2", "1"];
   const files = ["a", "b", "c", "d", "e", "f", "g", "h"];
@@ -17,17 +17,18 @@ const Board = forwardRef(({ FEN }, ref) => {
 
   useImperativeHandle(ref, () => ({
     undo: () => {
-      console.log(moveStack.current)
       moveStack.current.pop()
       const newFen = moveStack.current[moveStack.current.length - 1]
       chessboardRef.current?.resetBoard(newFen);
     },
     getMoveStack: () => moveStack.current,
+    makeMove: async (move) => await chessboardRef.current?.move({ from: move.from, to: move.to })
   }));
 
-  const updateMoveStack = () => {
+  const updateMoveStack = (moveInfo) => {
     const state = chessboardRef.current?.getState()
     moveStack.current.push(state.fen);
+    parentFunc(moveInfo)
   };
 
   return (
@@ -61,7 +62,7 @@ const Board = forwardRef(({ FEN }, ref) => {
             ref={chessboardRef}
             withLetters={false}
             withNumbers={false}
-            onMove={() => updateMoveStack()}
+            onMove={(moveInfo) => updateMoveStack(moveInfo)}
           />
         </View>
       </View>
