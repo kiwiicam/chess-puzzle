@@ -1,51 +1,45 @@
-import { Text, View, StyleSheet, Pressable } from "react-native";
+import { View, Text, Pressable, ImageBackground, ScrollView, StyleSheet, Image, Dimensions } from "react-native";
 import { useRouter } from "expo-router";
-import { useState } from "react";
+import { Ionicons } from "@expo/vector-icons";
+import { useFonts, Barlow_600SemiBold, Barlow_700Bold } from "@expo-google-fonts/barlow";
+import { useState, useEffect } from "react";
+import EvalBarMovable from "../components/EvalBarMovable";
+
+import backgroundimage from "../assets/homescreenbg.png";
 
 export default function Judgement() {
   const router = useRouter();
   const [loggedIn, setLoggedIn] = useState(false);
 
-  return (
-    <View style={[styles.test, styles.container]}>
-      <Text style={styles.text}>Judgement</Text>
+  const [fontsLoaded] = useFonts({
+    Barlow_600SemiBold,
+    Barlow_700Bold,
+  });
 
-      <Pressable
-        onPress={() => router.push("/")}
-        style={({ pressed }) => [
-          styles.button,
-          { backgroundColor: pressed ? "#388E3C" : "#4CAF50" },
-        ]}
-      >
-        <Text style={styles.buttonText}>Menu</Text>
-      </Pressable>
-    </View>
+  useEffect(() => {
+
+  })
+
+  if (!fontsLoaded) return null;//MUST BE AFTER ANY USE EFFECT
+
+  return (
+    <ImageBackground
+      source={backgroundimage}
+      style={styles.bgimage}
+      resizeMode="fit"
+    >
+
+      <EvalBarMovable />
+
+    </ImageBackground>
   );
 }
 
 const styles = StyleSheet.create({
-  test: {
-    backgroundColor: "#111",
-  },
-  container: {
+  bgimage: {
     flex: 1,
+    backgroundColor: "#111",
     justifyContent: "center",
-    alignItems: "center",
+    alignItems: "center"
   },
-  text: {
-    color: "#fff",
-    marginBottom: 20,
-    fontSize: 18,
-  },
-  button: {
-    paddingVertical: 12,
-    paddingHorizontal: 24,
-    borderRadius: 8,
-    alignItems: "center",
-  },
-  buttonText: {
-    color: "white",
-    fontSize: 16,
-    fontWeight: "bold",
-  },
-});
+})

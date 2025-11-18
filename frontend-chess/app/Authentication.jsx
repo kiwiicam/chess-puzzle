@@ -15,17 +15,17 @@ export default function Authentication() {
     router.back();
   };
 
-  // When signup succeeds → go to verify page
+
   const onSignUpSuccess = (email) => {
     setTempEmail(email);
     setShowSignUp(false);
     setShowVerify(true);
   };
 
-  // When verify succeeds → go to login form
+
   const onVerified = () => {
     setShowVerify(false);
-    setShowSignUp(false); // back to login
+    setShowSignUp(false);
   };
 
   return (

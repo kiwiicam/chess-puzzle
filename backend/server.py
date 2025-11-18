@@ -2,7 +2,6 @@ from flask import Flask
 import os
 from dotenv import load_dotenv
 
-# ⭐ LOAD THE .env FILE FIRST ⭐
 load_dotenv()
 
 # Now import routes (these rely on the env variables)
@@ -20,4 +19,4 @@ app.register_blueprint(database_bp)
 if __name__ == '__main__':
     
 
-    app.run(host='0.0.0.0', port=8000, debug=True)
+    app.run(host='0.0.0.0', port=5000, debug=True)
